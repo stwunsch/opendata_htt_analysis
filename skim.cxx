@@ -1,12 +1,10 @@
-#pragma once
-
 #include "ROOT/RDataFrame.hxx"
 #include "ROOT/RVec.hxx"
+#include "TStopwatch.h"
 
 #include <string>
 #include <vector>
-
-namespace Skim {
+#include <iostream>
 
 const std::string samplesBasePath = "/home/stefan/cms_opendata_samples/";
 
@@ -135,4 +133,28 @@ auto DeclareVariables(T &df) {
              .Define("met", "MET_pt");
 }
 
+int main(void) {
+    //ROOT::EnableImplicitMT();
+
+    for (const auto &sample : sampleNames) {
+        std::cout << "Process sample " << sample << ":" << std::endl;
+        TStopwatch time;
+        time.Start();
+
+        ROOT::RDataFrame df("Events", samplesBasePath + sample + ".root");
+        auto df2 = MinimalSelection(df);
+        auto df3 = FindGoodMuons(df2);
+        auto df4 = FindGoodTaus(df3);
+        auto df5 = FilterGoodEvents(df4);
+        auto df6 = FindMuonTauPair(df5);
+        auto df7 = DeclareVariables(df6);
+
+        auto dfFinal = df7;
+        auto report = dfFinal.Report();
+        dfFinal.Snapshot("Events", sample + "Skim.root", finalVariables);
+        time.Stop();
+
+        report->Print();
+        time.Print();
+    }
 }
