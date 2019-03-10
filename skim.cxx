@@ -33,6 +33,7 @@ const std::vector<std::string> finalVariables = {
     "pt_1", "eta_1", "phi_1", "m_1", "iso_1", "q_1",
     "pt_2", "eta_2", "phi_2", "m_2", "iso_2", "q_2",
     "met",
+    "weight"
 };
 
 template <typename T>
@@ -146,7 +147,7 @@ auto DeclareVariables(T &df) {
 template <typename T>
 auto AddEventWeight(T &df, const std::string& sample) {
     const auto weight = eventWeights[sample];
-    return df.Define("weight", [&weight](){ return weight; });
+    return df.Define("weight", [weight](){ return weight; });
 }
 
 int main() {
