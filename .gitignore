@@ -2,5 +2,4 @@
 *.swo
 *.o
 *.out
-build.sh
 *.root

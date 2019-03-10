@@ -12,7 +12,8 @@ int main(void) {
         std::cout << "Process sample " << sample << ":" << std::endl;
         TStopwatch time;
         time.Start();
-        ROOT::RDataFrame df("Events", Skim::sampleBasePath + sample + ".root");
+
+        ROOT::RDataFrame df("Events", Skim::samplesBasePath + sample + ".root");
         auto df2 = Skim::MinimalSelection(df);
         auto df3 = Skim::FindMuonTauPair(df2);
         auto df4 = Skim::DeclareVariables(df3);
