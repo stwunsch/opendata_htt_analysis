@@ -6,7 +6,7 @@
 #include <iostream>
 
 int main(void) {
-    ROOT::EnableImplicitMT();
+    //ROOT::EnableImplicitMT();
 
     for (const auto &sample : Skim::sampleNames) {
         std::cout << "Process sample " << sample << ":" << std::endl;
