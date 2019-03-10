@@ -18,6 +18,16 @@ const std::vector<std::string> sampleNames = {
     "W3JetsToLNu",
 };
 
+std::map<std::string, float> eventWeights = {
+    {"GluGluToHToTauTau", 1.0},
+    {"VBF_HToTauTau", 1.0},
+    {"DYJetsToLL", 1.0},
+    {"TTbar", 1.0},
+    {"W1JetsToLNu", 1.0},
+    {"W2JetsToLNu", 1.0},
+    {"W3JetsToLNu", 1.0},
+};
+
 const std::vector<std::string> finalVariables = {
     "nMuon", "nTau",
     "pt_1", "eta_1", "phi_1", "m_1", "iso_1", "q_1",
@@ -133,7 +143,13 @@ auto DeclareVariables(T &df) {
              .Define("met", "MET_pt");
 }
 
-int main(void) {
+template <typename T>
+auto AddEventWeight(T &df, const std::string& sample) {
+    const auto weight = eventWeights[sample];
+    return df.Define("weight", [&weight](){ return weight; });
+}
+
+int main() {
     //ROOT::EnableImplicitMT();
 
     for (const auto &sample : sampleNames) {
@@ -148,8 +164,9 @@ int main(void) {
         auto df5 = FilterGoodEvents(df4);
         auto df6 = FindMuonTauPair(df5);
         auto df7 = DeclareVariables(df6);
+        auto df8 = AddEventWeight(df7, sample);
 
-        auto dfFinal = df7;
+        auto dfFinal = df8;
         auto report = dfFinal.Report();
         dfFinal.Snapshot("Events", sample + "Skim.root", finalVariables);
         time.Stop();
