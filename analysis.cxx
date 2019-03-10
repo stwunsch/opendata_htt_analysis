@@ -15,12 +15,15 @@ int main(void) {
 
         ROOT::RDataFrame df("Events", Skim::samplesBasePath + sample + ".root");
         auto df2 = Skim::MinimalSelection(df);
-        auto df3 = Skim::FindMuonTauPair(df2);
-        auto df4 = Skim::DeclareVariables(df3);
+        auto df3 = Skim::FindGoodMuons(df2);
+        auto df4 = Skim::FindGoodTaus(df3);
+        auto df5 = Skim::FilterGoodEvents(df4);
+        auto df6 = Skim::FindMuonTauPair(df5);
+        auto df7 = Skim::DeclareVariables(df6);
 
-        auto dfFinal = df4;
+        auto dfFinal = df7;
         auto report = dfFinal.Report();
-        dfFinal.Snapshot("ntuple", sample + "Skim.root", Skim::finalVariables);
+        dfFinal.Snapshot("Events", sample + "Skim.root", Skim::finalVariables);
         time.Stop();
 
         report->Print();

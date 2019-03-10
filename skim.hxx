@@ -22,8 +22,8 @@ const std::vector<std::string> sampleNames = {
 
 const std::vector<std::string> finalVariables = {
     "nMuon", "nTau",
-    "pt_1", "eta_1", "phi_1", "m_1", "iso_1",
-    "pt_2", "eta_2", "phi_2", "m_2", "iso_2",
+    "pt_1", "eta_1", "phi_1", "m_1", "iso_1", "q_1",
+    "pt_2", "eta_2", "phi_2", "m_2", "iso_2", "q_2",
     "met",
 };
 
@@ -36,18 +36,86 @@ auto MinimalSelection(T &df) {
 }
 
 template <typename T>
+auto FindGoodMuons(T &df) {
+    return df.Define("goodMuons", "Muon_tightId == true");
+}
+
+template <typename T>
+auto FindGoodTaus(T &df) {
+    return df.Define("goodTaus", "Tau_charge != 0");
+}
+
+
+template <typename T>
+auto FilterGoodEvents(T &df) {
+    return df.Filter("Sum(goodTaus) > 0", "Event has good taus")
+             .Filter("Sum(goodMuons) > 0", "Event has good muons");
+}
+
+template <typename T>
 auto FindMuonTauPair(T &df) {
+    using namespace ROOT::VecOps;
     return df.Define("pairIdx",
-                     [](ROOT::RVec<float>& pt, ROOT::RVec<float>& niso, ROOT::RVec<float>& ciso)
+                     [](RVec<int>& goodMuons,
+                        RVec<float>& pt_1, RVec<float>& eta_1, RVec<float>& phi_1,
+                        RVec<int>& goodTaus,
+                        RVec<float>& eta_2, RVec<float>& phi_2,
+                        RVec<float>& niso, RVec<float>& ciso)
                          {
-                             using namespace ROOT::VecOps;
-                             unsigned int idx_1 = Reverse(Argsort(pt))[0];
-                             unsigned int idx_2 = Argsort(abs(niso) + abs(ciso))[0];
-                             return std::vector<unsigned int>({idx_1, idx_2});
+                             // Get indices of all possible combinations
+                             auto comb = Combinations(pt_1, eta_2);
+                             const auto numComb = comb[0].size();
+
+                             // Find valid pairs based on delta r
+                             std::vector<int> validPair(numComb);
+                             auto deltar = sqrt(
+                                     pow(Take(eta_1, comb[0]) - Take(eta_2, comb[1]), 2) +
+                                     pow(Take(phi_1, comb[0]) - Take(phi_2, comb[1]), 2));
+                             for(size_t i = 0; i < numComb; i++) {
+                                 if(goodTaus[i] == 1 && goodMuons[i] == 1 && deltar[i] > 0.5) {
+                                     validPair[i] = 1;
+                                 } else {
+                                     validPair[i] = 0;
+                                 }
+                             }
+
+                             // Find best muon based on pt
+                             int idx_1 = -1;
+                             float maxPt = -1;
+                             for(size_t i = 0; i < numComb; i++) {
+                                 if(validPair[i] == 0) continue;
+                                 const auto tmp = comb[0][i];
+                                 if(maxPt < pt_1[tmp]) {
+                                     maxPt = pt_1[tmp];
+                                     idx_1 = tmp;
+                                 }
+                             }
+
+                             // Find best tau based on iso
+                             int idx_2 = -1;
+                             float minIso = 999;
+                             const auto iso = niso + ciso;
+                             for(size_t i = 0; i < numComb; i++) {
+                                 if(validPair[i] == 0) continue;
+                                 if(int(comb[0][i]) != idx_1) continue;
+                                 const auto tmp = comb[1][i];
+                                 if(minIso > iso[tmp]) {
+                                     minIso = iso[tmp];
+                                     idx_2 = tmp;
+                                 }
+                             }
+
+                             return std::vector<int>({idx_1, idx_2});
                          },
-                     {"Muon_pt", "Tau_chargedIso", "Tau_neutralIso"})
+                     {"goodMuons",
+                      "Muon_pt", "Muon_eta", "Muon_phi",
+                      "goodTaus",
+                      "Tau_eta", "Tau_phi",
+                      "Tau_chargedIso", "Tau_neutralIso"})
              .Define("idx_1", "pairIdx[0]")
-             .Define("idx_2", "pairIdx[1]");
+             .Define("idx_2", "pairIdx[1]")
+             .Filter("idx_1 != -1", "Valid muon in selected pair")
+             .Filter("idx_2 != -1", "Valid tau in selected pair");
 }
 
 template <typename T>
@@ -57,11 +125,13 @@ auto DeclareVariables(T &df) {
              .Define("phi_1", "Muon_phi[idx_1]")
              .Define("m_1", "Muon_mass[idx_1]")
              .Define("iso_1", "Muon_pfRelIso03_all[idx_1]")
+             .Define("q_1", "Muon_charge[idx_1]")
              .Define("pt_2", "Tau_pt[idx_2]")
              .Define("eta_2", "Tau_eta[idx_2]")
              .Define("phi_2", "Tau_phi[idx_2]")
              .Define("m_2", "Tau_mass[idx_2]")
              .Define("iso_2", "Tau_chargedIso[idx_2] + Tau_neutralIso[idx_2]")
+             .Define("q_2", "Tau_charge[idx_2]")
              .Define("met", "MET_pt");
 }
 
