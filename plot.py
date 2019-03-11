@@ -6,8 +6,13 @@ import argparse
 
 
 labels = {
-        "pt_1": "p_{T}(#mu)",
-        "pt_2": "p_{T}(#tau)",
+        "pt_1": "Muon p_{T} / GeV",
+        "pt_2": "Tau p_{T} / GeV",
+        "eta_1": "Muon #eta",
+        "eta_2": "Tau #eta",
+        "phi_1": "Muon #phi",
+        "phi_2": "Tau #phi",
+        "met": "Missing transverse energy / GeV",
         }
 
 colors = {
@@ -62,17 +67,17 @@ def main():
     ROOT.gStyle.SetTitleFont(42, "XYZ")
     ROOT.gStyle.SetTitleSize(0.05, "XYZ")
     ROOT.gStyle.SetTitleXOffset(1.00)
-    ROOT.gStyle.SetTitleYOffset(1.50)
+    ROOT.gStyle.SetTitleYOffset(1.60)
 
     ROOT.gStyle.SetLabelColor(1, "XYZ")
     ROOT.gStyle.SetLabelFont(42, "XYZ")
     ROOT.gStyle.SetLabelOffset(0.007, "XYZ")
     ROOT.gStyle.SetLabelSize(0.04, "XYZ")
 
-    ROOT.gStyle.SetAxisColor(1, 'XYZ')
+    ROOT.gStyle.SetAxisColor(1, "XYZ")
     ROOT.gStyle.SetStripDecimals(True)
-    ROOT.gStyle.SetTickLength(0.03, 'XYZ')
-    ROOT.gStyle.SetNdivisions(510, 'XYZ')
+    ROOT.gStyle.SetTickLength(0.03, "XYZ")
+    ROOT.gStyle.SetNdivisions(510, "XYZ")
     ROOT.gStyle.SetPadTickX(1)
     ROOT.gStyle.SetPadTickY(1)
 
@@ -105,6 +110,7 @@ def main():
 
     data = getHistogram(tfile, "dataRunB")
     data.SetMarkerStyle(20)
+    data.SetLineColor(ROOT.kBlack)
 
     QCD = data.Clone()
     for name in ["W1J", "W2J", "W3J", "TT", "ZLL"]:
