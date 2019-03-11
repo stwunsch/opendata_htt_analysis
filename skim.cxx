@@ -16,16 +16,20 @@ const std::vector<std::string> sampleNames = {
     "W1JetsToLNu",
     "W2JetsToLNu",
     "W3JetsToLNu",
+    "Run2012B_SingleMu",
+    //"Run2012C_SingleMu",
 };
 
 std::map<std::string, float> eventWeights = {
-    {"GluGluToHToTauTau", 19.6},
-    {"VBF_HToTauTau", 1.55},
-    {"DYJetsToLL", 3503.7},
-    {"TTbar", 225.2},
-    {"W1JetsToLNu", 6381.2},
-    {"W2JetsToLNu", 2039.8},
-    {"W3JetsToLNu", 612.5},
+    {"GluGluToHToTauTau", 19.6 / 51920.0},
+    {"VBF_HToTauTau", 1.55 / 73601.0},
+    {"DYJetsToLL", 3503.7 / 5267460.0},
+    {"TTbar", 225.2 / 1971791.0},
+    {"W1JetsToLNu", 6381.2 / 534039.0},
+    {"W2JetsToLNu", 2039.8 / 1196957.0},
+    {"W3JetsToLNu", 612.5 / 977194.0},
+    {"Run2012B_SingleMu", 1.0},
+    {"Run2012C_SingleMu", 1.0},
 };
 
 const std::vector<std::string> finalVariables = {
@@ -38,7 +42,8 @@ const std::vector<std::string> finalVariables = {
 
 template <typename T>
 auto MinimalSelection(T &df) {
-    return df.Filter("nMuon > 0", "nMuon > 0")
+    return df.Filter("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v2 || HLT_Mu17_eta2p1_LooseIsoPFTau20_v2", "Passes trigger")
+             .Filter("nMuon > 0", "nMuon > 0")
              .Filter("nTau > 0", "nTau > 0")
              .Filter("Muon_pt[0] < 1000", "Sanity check Muon_pt")
              .Filter("Tau_pt[0] < 1000", "Sanity check Tau_pt");
