@@ -177,6 +177,7 @@ def main(variable):
     latex.DrawLatex(0.16, 0.935, "#bf{CMS Open Data}")
 
     c.SaveAs("{}.pdf".format(variable))
+    c.SaveAs("{}.png".format(variable))
 
 
 if __name__ == "__main__":
