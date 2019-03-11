@@ -1,8 +1,15 @@
-#!/usr/bin/env python
-
 import ROOT
-#ROOT.PyConfig.IgnoreCommandLineOptions = True
-import argparse
+
+
+ranges = {
+        "pt_1": (30, 80),
+        "pt_2": (30, 80),
+        "eta_1": (-2.4, 2.4),
+        "eta_2": (-2.4, 2.4),
+        "phi_1": (-3.14, 3.14),
+        "phi_2": (-3.14, 3.14),
+        "met": (0, 80),
+        }
 
 
 def createDataFrame(name):
@@ -24,22 +31,12 @@ def writeHistogram(h, name):
     h.Write()
 
 
-def parseArguments():
-    parser = argparse.ArgumentParser(description="Produce histograms for plotting")
-    parser.add_argument("variable", type=str, help="Variable")
-    parser.add_argument("nBins", type=int, help="Number of bins in histogram")
-    parser.add_argument("rangeMin", type=float, help="Minimum of range in histogram")
-    parser.add_argument("rangeMax", type=float, help="Maximum of range in histogram")
-    return parser.parse_args()
-
-
-def main(args):
+def main():
     ROOT.ROOT.EnableImplicitMT()
     tfile = ROOT.TFile("shapes.root", "RECREATE")
 
-    variable = args.variable
-    nbins = args.nBins
-    range_ = (args.rangeMin, args.rangeMax)
+    variables = ranges.keys()
+    nbins = 30
     lumi = 11580.0
 
     for name, label, lumi_ in [
@@ -55,17 +52,22 @@ def main(args):
         df = createDataFrame(name)
 
         df1 = applyBaseline(df, lumi_)
-        h1 = bookHistogram(df1, variable, nbins, range_)
+        hists = {}
+        for variable in variables:
+            hists[variable] = bookHistogram(df1, variable, nbins, ranges[variable])
 
         df2 = applyBaseline(df, lumi_, samesign=True)
-        h2 = bookHistogram(df2, variable, nbins, range_)
+        hists_ss = {}
+        for variable in variables:
+            hists_ss[variable] = bookHistogram(df2, variable, nbins, ranges[variable])
 
-        writeHistogram(h1, label)
-        writeHistogram(h2, label + "_ss")
+        for variable in variables:
+            writeHistogram(hists[variable], "{}_{}".format(label, variable))
+        for variable in variables:
+            writeHistogram(hists_ss[variable], "{}_{}_ss".format(label, variable))
 
     tfile.Close()
 
 
 if __name__ == "__main__":
-    args = parseArguments()
-    main(args)
+    main()
