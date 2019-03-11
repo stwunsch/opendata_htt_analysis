@@ -19,13 +19,13 @@ const std::vector<std::string> sampleNames = {
 };
 
 std::map<std::string, float> eventWeights = {
-    {"GluGluToHToTauTau", 1.0},
-    {"VBF_HToTauTau", 1.0},
-    {"DYJetsToLL", 1.0},
-    {"TTbar", 1.0},
-    {"W1JetsToLNu", 1.0},
-    {"W2JetsToLNu", 1.0},
-    {"W3JetsToLNu", 1.0},
+    {"GluGluToHToTauTau", 19.6},
+    {"VBF_HToTauTau", 1.55},
+    {"DYJetsToLL", 3503.7},
+    {"TTbar", 225.2},
+    {"W1JetsToLNu", 6381.2},
+    {"W2JetsToLNu", 2039.8},
+    {"W3JetsToLNu", 612.5},
 };
 
 const std::vector<std::string> finalVariables = {
