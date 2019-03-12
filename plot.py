@@ -87,12 +87,13 @@ def main(variable):
     # Load and prepare histograms
     ggH = getHistogram(tfile, "ggH", variable)
     ggH.SetLineColor(colors["ggH"])
-    scaleSignal = 100.0
-    ggH.Scale(scaleSignal)
+    scale_ggH = 200.0
+    ggH.Scale(scale_ggH)
 
     qqH = getHistogram(tfile, "qqH", variable)
     qqH.SetLineColor(colors["qqH"])
-    qqH.Scale(scaleSignal)
+    scale_qqH = 2000.0
+    qqH.Scale(scale_qqH)
 
     W = getHistogram(tfile, "W1J", variable)
     W2J = getHistogram(tfile, "W2J", variable)
@@ -156,15 +157,15 @@ def main(variable):
     data.Scale(scaleData)
 
     # Add legend
-    legend = ROOT.TLegend(0.4, 0.75, 0.90, 0.90)
+    legend = ROOT.TLegend(0.4, 0.73, 0.90, 0.88)
     legend.SetNColumns(2)
-    legend.AddEntry(W, "W", "f")
-    legend.AddEntry(TT, "TT", "f")
-    legend.AddEntry(ZLL, "ZLL", "f")
-    legend.AddEntry(QCD, "QCD", "f")
-    legend.AddEntry(ggH, "ggH (x{:.1f})".format(scaleSignal), "l")
-    legend.AddEntry(qqH, "qqH (x{:.1f})".format(scaleSignal), "l")
-    legend.AddEntry(data, "Data (x{:.1f})".format(scaleData), "lep")
+    legend.AddEntry(W, "W+jets", "f")
+    legend.AddEntry(TT, "t#bar{t}", "f")
+    legend.AddEntry(ZLL, "Z#rightarrowll", "f")
+    legend.AddEntry(QCD, "QCD multijet", "f")
+    legend.AddEntry(ggH, "gg#rightarrowH (x{:.0f})".format(scale_ggH), "l")
+    legend.AddEntry(qqH, "qq#rightarrowH (x{:.0f})".format(scale_qqH), "l")
+    legend.AddEntry(data, "Data (x{:.0f})".format(scaleData), "lep")
     legend.SetBorderSize(0)
     legend.Draw()
 
