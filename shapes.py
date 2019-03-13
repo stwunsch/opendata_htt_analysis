@@ -14,9 +14,10 @@ ranges = {
         "q_1": (2, -2, 2),
         "q_2": (2, -2, 2),
         "met": (default_nbins, 0, 80),
+        "m_1": (default_nbins, 0, 0.2),
         "m_2": (default_nbins, 0, 2),
         "dm_2": (11, 0, 11),
-        "m_vis": (default_nbins, 0, 200),
+        "m_vis": (default_nbins, 70, 110),
         }
 
 

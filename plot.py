@@ -15,6 +15,7 @@ labels = {
         "q_2": "Tau charge",
         "iso_1": "Muon isolation",
         "iso_2": "Tau isolation",
+        "m_1": "Muon mass / GeV",
         "m_2": "Tau mass / GeV",
         "dm_2": "Tau decay mode",
         "m_vis": "Visible di-#tau mass / GeV",

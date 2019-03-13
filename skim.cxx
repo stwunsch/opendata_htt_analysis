@@ -168,7 +168,7 @@ const std::vector<std::string> finalVariables = {
 };
 
 int main() {
-    ROOT::EnableImplicitMT();
+    //ROOT::EnableImplicitMT();
 
     for (const auto &sample : sampleNames) {
         std::cout << ">>> Process sample " << sample << ":" << std::endl;
