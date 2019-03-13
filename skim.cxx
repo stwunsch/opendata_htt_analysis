@@ -23,13 +23,13 @@ const std::vector<std::string> sampleNames = {
 };
 
 std::map<std::string, float> eventWeights = {
-    {"GluGluToHToTauTau", 19.6 / 51920.0},
-    {"VBF_HToTauTau", 1.55 / 73601.0},
-    {"DYJetsToLL", 3503.7 / 5267460.0},
-    {"TTbar", 225.2 / 1971791.0},
-    {"W1JetsToLNu", 6381.2 / 534039.0},
-    {"W2JetsToLNu", 2039.8 / 1196957.0},
-    {"W3JetsToLNu", 612.5 / 977194.0},
+    {"GluGluToHToTauTau", 19.6 / 476963.0},
+    {"VBF_HToTauTau", 1.55 / 491653.0},
+    {"DYJetsToLL", 3503.7 / 30458871.0},
+    {"TTbar", 225.2 / 6423106.0},
+    {"W1JetsToLNu", 6381.2 / 29784800.0},
+    {"W2JetsToLNu", 2039.8 / 30693853.0},
+    {"W3JetsToLNu", 612.5 / 15241144.0},
     {"Run2012B_SingleMu", 1.0},
     {"Run2012C_SingleMu", 1.0},
 };
@@ -176,6 +176,8 @@ int main() {
         time.Start();
 
         ROOT::RDataFrame df("Events", samplesBasePath + sample + ".root");
+        std::cout << "Number of events: " << *df.Count() << std::endl;
+
         auto df2 = MinimalSelection(df);
         auto df3 = FindGoodMuons(df2);
         auto df4 = FindGoodTaus(df3);

@@ -130,10 +130,10 @@ def main(variable):
     QCD.SetFillColor(colors["QCD"])
 
     stack = ROOT.THStack("", "")
-    stack.Add(W)
-    stack.Add(TT)
-    stack.Add(ZLL)
     stack.Add(QCD)
+    stack.Add(TT)
+    stack.Add(W)
+    stack.Add(ZLL)
 
     for x in [ggH, qqH]:
         x.SetLineWidth(3)
@@ -161,7 +161,7 @@ def main(variable):
     qqH.Draw("HIST SAME")
 
     data.Draw("E1P SAME")
-    scaleData = 17.0
+    scaleData = 3.0
     data.Scale(scaleData)
 
     # Add legend
