@@ -3,14 +3,14 @@ import ROOT
 
 default_nbins = 30
 ranges = {
-        "pt_1": (default_nbins, 30, 80),
-        "pt_2": (default_nbins, 30, 80),
+        "pt_1": (default_nbins, 30, 70),
+        "pt_2": (default_nbins, 30, 70),
         "eta_1": (default_nbins, -2.4, 2.4),
         "eta_2": (default_nbins, -2.4, 2.4),
         "phi_1": (default_nbins, -3.14, 3.14),
         "phi_2": (default_nbins, -3.14, 3.14),
-        "iso_1": (default_nbins, 0, 0.3),
-        "iso_2": (default_nbins, 0, 0.3),
+        "iso_1": (default_nbins, 0, 0.10),
+        "iso_2": (default_nbins, 0, 0.10),
         "q_1": (2, -2, 2),
         "q_2": (2, -2, 2),
         "met": (default_nbins, 0, 80),
