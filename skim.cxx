@@ -42,7 +42,7 @@ const std::vector<std::string> finalVariables = {
 
 template <typename T>
 auto MinimalSelection(T &df) {
-    return df.Filter("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v2 || HLT_Mu17_eta2p1_LooseIsoPFTau20_v2", "Passes trigger")
+    return df.Filter("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v2", "Passes trigger")
              .Filter("nMuon > 0", "nMuon > 0")
              .Filter("nTau > 0", "nTau > 0")
              .Filter("Muon_pt[0] < 1000", "Sanity check Muon_pt")
@@ -51,12 +51,12 @@ auto MinimalSelection(T &df) {
 
 template <typename T>
 auto FindGoodMuons(T &df) {
-    return df.Define("goodMuons", "Muon_tightId == true");
+    return df.Define("goodMuons", "Muon_tightId == true && abs(Muon_eta) < 2.4");
 }
 
 template <typename T>
 auto FindGoodTaus(T &df) {
-    return df.Define("goodTaus", "Tau_charge != 0 && Tau_decayMode >= 0");
+    return df.Define("goodTaus", "Tau_charge != 0 && Tau_decayMode >= 0 && abs(Tau_eta) < 2.4");
 }
 
 

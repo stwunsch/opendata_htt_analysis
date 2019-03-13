@@ -1,14 +1,20 @@
 import ROOT
 
 
+default_nbins = 30
 ranges = {
-        "pt_1": (30, 80),
-        "pt_2": (30, 80),
-        "eta_1": (-2.4, 2.4),
-        "eta_2": (-2.4, 2.4),
-        "phi_1": (-3.14, 3.14),
-        "phi_2": (-3.14, 3.14),
-        "met": (0, 80),
+        "pt_1": (default_nbins, 30, 80),
+        "pt_2": (default_nbins, 30, 80),
+        "eta_1": (default_nbins, -2.4, 2.4),
+        "eta_2": (default_nbins, -2.4, 2.4),
+        "phi_1": (default_nbins, -3.14, 3.14),
+        "phi_2": (default_nbins, -3.14, 3.14),
+        "m_2": (default_nbins, 0, 2),
+        "iso_1": (default_nbins, 0, 0.3),
+        "iso_2": (default_nbins, 0, 7),
+        "q_1": (2, -2, 2),
+        "q_2": (2, -2, 2),
+        "met": (default_nbins, 0, 80),
         }
 
 
@@ -21,8 +27,8 @@ def applyBaseline(df, lumi, samesign=False):
              .Define("plotting_weight", "weight * {}".format(float(lumi)))
 
 
-def bookHistogram(df, variable, nbins, range_):
-    return df.Histo1D(ROOT.ROOT.RDF.TH1DModel(variable, variable, nbins, range_[0], range_[1]),\
+def bookHistogram(df, variable, range_):
+    return df.Histo1D(ROOT.ROOT.RDF.TH1DModel(variable, variable, range_[0], range_[1], range_[2]),\
                       variable, "plotting_weight")
 
 
@@ -36,7 +42,6 @@ def main():
     tfile = ROOT.TFile("shapes.root", "RECREATE")
 
     variables = ranges.keys()
-    nbins = 30
     lumi = 11580.0
 
     for name, label, lumi_ in [
@@ -54,12 +59,12 @@ def main():
         df1 = applyBaseline(df, lumi_)
         hists = {}
         for variable in variables:
-            hists[variable] = bookHistogram(df1, variable, nbins, ranges[variable])
+            hists[variable] = bookHistogram(df1, variable, ranges[variable])
 
         df2 = applyBaseline(df, lumi_, samesign=True)
         hists_ss = {}
         for variable in variables:
-            hists_ss[variable] = bookHistogram(df2, variable, nbins, ranges[variable])
+            hists_ss[variable] = bookHistogram(df2, variable, ranges[variable])
 
         for variable in variables:
             writeHistogram(hists[variable], "{}_{}".format(label, variable))

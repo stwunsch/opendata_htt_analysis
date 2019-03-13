@@ -11,6 +11,11 @@ labels = {
         "phi_1": "Muon #phi",
         "phi_2": "Tau #phi",
         "met": "Missing transverse energy / GeV",
+        "m_2": "Tau mass / GeV",
+        "q_1": "Muon charge",
+        "q_2": "Tau charge",
+        "iso_1": "Muon isolation",
+        "iso_2": "Tau isolation",
         }
 
 colors = {
@@ -152,8 +157,7 @@ def main(variable):
     qqH.Draw("HIST SAME")
 
     data.Draw("E1P SAME")
-    #scaleData = sum([x.Integral() for x in [W, TT, ZLL, QCD]]) / data.Integral()
-    scaleData = 17.5
+    scaleData = 17.0
     data.Scale(scaleData)
 
     # Add legend
