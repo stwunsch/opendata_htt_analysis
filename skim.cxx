@@ -35,7 +35,7 @@ std::map<std::string, float> eventWeights = {
 const std::vector<std::string> finalVariables = {
     "nMuon", "nTau",
     "pt_1", "eta_1", "phi_1", "m_1", "iso_1", "q_1",
-    "pt_2", "eta_2", "phi_2", "m_2", "iso_2", "q_2",
+    "pt_2", "eta_2", "phi_2", "m_2", "iso_2", "q_2", "dm_2",
     "met",
     "weight"
 };
@@ -146,6 +146,7 @@ auto DeclareVariables(T &df) {
              .Define("m_2", "Tau_mass[idx_2]")
              .Define("iso_2", "Tau_chargedIso[idx_2] + Tau_neutralIso[idx_2]")
              .Define("q_2", "Tau_charge[idx_2]")
+             .Define("dm_2", "Tau_decayMode[idx_2]")
              .Define("met", "MET_pt");
 }
 

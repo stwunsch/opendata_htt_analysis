@@ -11,12 +11,14 @@ labels = {
         "phi_1": "Muon #phi",
         "phi_2": "Tau #phi",
         "met": "Missing transverse energy / GeV",
-        "m_2": "Tau mass / GeV",
         "q_1": "Muon charge",
         "q_2": "Tau charge",
         "iso_1": "Muon isolation",
         "iso_2": "Tau isolation",
+        "m_2": "Tau mass / GeV",
+        "dm_2": "Tau decay mode",
         }
+
 
 colors = {
         "ggH": ROOT.TColor.GetColor("#BF2229"),

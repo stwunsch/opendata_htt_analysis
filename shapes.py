@@ -9,12 +9,13 @@ ranges = {
         "eta_2": (default_nbins, -2.4, 2.4),
         "phi_1": (default_nbins, -3.14, 3.14),
         "phi_2": (default_nbins, -3.14, 3.14),
-        "m_2": (default_nbins, 0, 2),
         "iso_1": (default_nbins, 0, 0.3),
         "iso_2": (default_nbins, 0, 7),
         "q_1": (2, -2, 2),
         "q_2": (2, -2, 2),
         "met": (default_nbins, 0, 80),
+        "m_2": (default_nbins, 0, 2),
+        "dm_2": (11, 0, 11),
         }
 
 
