@@ -10,7 +10,7 @@ ranges = {
         "phi_1": (default_nbins, -3.14, 3.14),
         "phi_2": (default_nbins, -3.14, 3.14),
         "iso_1": (default_nbins, 0, 0.3),
-        "iso_2": (default_nbins, 0, 7),
+        "iso_2": (default_nbins, 0, 0.3),
         "q_1": (2, -2, 2),
         "q_2": (2, -2, 2),
         "met": (default_nbins, 0, 80),

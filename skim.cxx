@@ -144,7 +144,7 @@ auto DeclareVariables(T &df) {
              .Define("eta_2", "Tau_eta[idx_2]")
              .Define("phi_2", "Tau_phi[idx_2]")
              .Define("m_2", "Tau_mass[idx_2]")
-             .Define("iso_2", "Tau_chargedIso[idx_2] + Tau_neutralIso[idx_2]")
+             .Define("iso_2", "(Tau_chargedIso[idx_2] + Tau_neutralIso[idx_2]) / Tau_pt[idx_2]")
              .Define("q_2", "Tau_charge[idx_2]")
              .Define("dm_2", "Tau_decayMode[idx_2]")
              .Define("met", "MET_pt");
@@ -157,10 +157,10 @@ auto AddEventWeight(T &df, const std::string& sample) {
 }
 
 int main() {
-    //ROOT::EnableImplicitMT();
+    ROOT::EnableImplicitMT();
 
     for (const auto &sample : sampleNames) {
-        std::cout << "Process sample " << sample << ":" << std::endl;
+        std::cout << ">>> Process sample " << sample << ":" << std::endl;
         TStopwatch time;
         time.Start();
 
