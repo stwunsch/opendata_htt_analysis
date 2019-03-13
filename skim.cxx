@@ -56,7 +56,7 @@ auto FindGoodMuons(T &df) {
 
 template <typename T>
 auto FindGoodTaus(T &df) {
-    return df.Define("goodTaus", "Tau_charge != 0");
+    return df.Define("goodTaus", "Tau_charge != 0 && Tau_decayMode >= 0");
 }
 
 
