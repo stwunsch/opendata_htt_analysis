@@ -16,6 +16,7 @@ ranges = {
         "met": (default_nbins, 0, 80),
         "m_2": (default_nbins, 0, 2),
         "dm_2": (11, 0, 11),
+        "m_vis": (default_nbins, 0, 200),
         }
 
 

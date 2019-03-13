@@ -1,5 +1,7 @@
 #include "ROOT/RDataFrame.hxx"
 #include "ROOT/RVec.hxx"
+
+#include "TLorentzVector.h"
 #include "TStopwatch.h"
 
 #include <string>
@@ -30,14 +32,6 @@ std::map<std::string, float> eventWeights = {
     {"W3JetsToLNu", 612.5 / 977194.0},
     {"Run2012B_SingleMu", 1.0},
     {"Run2012C_SingleMu", 1.0},
-};
-
-const std::vector<std::string> finalVariables = {
-    "nMuon", "nTau",
-    "pt_1", "eta_1", "phi_1", "m_1", "iso_1", "q_1",
-    "pt_2", "eta_2", "phi_2", "m_2", "iso_2", "q_2", "dm_2",
-    "met",
-    "weight"
 };
 
 template <typename T>
@@ -134,6 +128,14 @@ auto FindMuonTauPair(T &df) {
 
 template <typename T>
 auto DeclareVariables(T &df) {
+    auto compute_mass = [](float pt_1, float eta_1, float phi_1, float mass_1,
+                           float pt_2, float eta_2, float phi_2, float mass_2)
+    {
+        TLorentzVector p1, p2;
+        p1.SetPtEtaPhiM(pt_1, eta_1, phi_1, mass_1);
+        p2.SetPtEtaPhiM(pt_2, eta_2, phi_2, mass_2);
+        return (p1 + p2).M();
+    };
     return df.Define("pt_1", "Muon_pt[idx_1]")
              .Define("eta_1", "Muon_eta[idx_1]")
              .Define("phi_1", "Muon_phi[idx_1]")
@@ -147,7 +149,8 @@ auto DeclareVariables(T &df) {
              .Define("iso_2", "(Tau_chargedIso[idx_2] + Tau_neutralIso[idx_2]) / Tau_pt[idx_2]")
              .Define("q_2", "Tau_charge[idx_2]")
              .Define("dm_2", "Tau_decayMode[idx_2]")
-             .Define("met", "MET_pt");
+             .Define("met", "MET_pt")
+             .Define("m_vis", compute_mass, {"pt_1", "eta_1", "phi_1", "m_1", "pt_2", "eta_2", "phi_2", "m_2"});
 }
 
 template <typename T>
@@ -155,6 +158,14 @@ auto AddEventWeight(T &df, const std::string& sample) {
     const auto weight = eventWeights[sample];
     return df.Define("weight", [weight](){ return weight; });
 }
+
+const std::vector<std::string> finalVariables = {
+    "nMuon", "nTau",
+    "pt_1", "eta_1", "phi_1", "m_1", "iso_1", "q_1",
+    "pt_2", "eta_2", "phi_2", "m_2", "iso_2", "q_2", "dm_2",
+    "met", "m_vis",
+    "weight"
+};
 
 int main() {
     ROOT::EnableImplicitMT();

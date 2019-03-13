@@ -17,6 +17,7 @@ labels = {
         "iso_2": "Tau isolation",
         "m_2": "Tau mass / GeV",
         "dm_2": "Tau decay mode",
+        "m_vis": "Visible di-#tau mass / GeV",
         }
 
 
