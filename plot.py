@@ -93,58 +93,57 @@ def main(variable):
     ROOT.gStyle.SetHatchesLineWidth(5)
     ROOT.gStyle.SetHatchesSpacing(0.05)
 
-    # Load and prepare histograms
-    ggH = getHistogram(tfile, "ggH", variable)
-    ggH.SetLineColor(colors["ggH"])
-    scale_ggH = 200.0
-    ggH.Scale(scale_ggH)
+    ROOT.TGaxis.SetExponentOffset(-0.08, 0.01, "Y")
 
+    # Simulation
+    ggH = getHistogram(tfile, "ggH", variable)
     qqH = getHistogram(tfile, "qqH", variable)
-    qqH.SetLineColor(colors["qqH"])
-    scale_qqH = 2000.0
-    qqH.Scale(scale_qqH)
 
     W = getHistogram(tfile, "W1J", variable)
     W2J = getHistogram(tfile, "W2J", variable)
     W3J = getHistogram(tfile, "W3J", variable)
     W.Add(W2J)
     W.Add(W3J)
-    W.SetFillColor(colors["W"])
 
     TT = getHistogram(tfile, "TT", variable)
-    TT.SetFillColor(colors["TT"])
 
     ZLL = getHistogram(tfile, "ZLL", variable)
-    ZLL.SetFillColor(colors["ZLL"])
 
+    # Data
     data = getHistogram(tfile, "dataRunB", variable)
-    data.SetMarkerStyle(20)
-    data.SetLineColor(ROOT.kBlack)
 
-    QCD = data.Clone()
+    # Data-driven QCD estimation
+    QCD = getHistogram(tfile, "dataRunB", variable, "_ss")
     for name in ["W1J", "W2J", "W3J", "TT", "ZLL"]:
-        QCD.Add(getHistogram(tfile, name, variable, "_ss"), -1.0)
+        ss = getHistogram(tfile, name, variable, "_ss")
+        QCD.Add(ss, -1.0)
     for i in range(1, QCD.GetNbinsX() + 1):
         if QCD.GetBinContent(i) < 0.0:
             QCD.SetBinContent(i, 0.0)
-    QCD.SetFillColor(colors["QCD"])
 
-    stack = ROOT.THStack("", "")
-    stack.Add(QCD)
-    stack.Add(TT)
-    stack.Add(W)
-    stack.Add(ZLL)
+    # Draw histograms
+    data.SetMarkerStyle(20)
+    data.SetLineColor(ROOT.kBlack)
+    ggH.SetLineColor(colors["ggH"])
+    qqH.SetLineColor(colors["qqH"])
+
+    scale_ggH = 200.0
+    ggH.Scale(scale_ggH)
+    scale_qqH = 2000.0
+    qqH.Scale(scale_qqH)
 
     for x in [ggH, qqH]:
         x.SetLineWidth(3)
 
-    for x in [QCD, TT, ZLL, W]:
+    for x, l in [(QCD, "QCD"), (TT, "TT"), (ZLL, "ZLL"), (W, "W")]:
         x.SetLineWidth(0)
+        x.SetFillColor(colors[l])
 
+    stack = ROOT.THStack("", "")
+    for x in [QCD, TT, W, ZLL]:
+        stack.Add(x)
 
-    # Draw histograms
     c = ROOT.TCanvas("", "", 600, 600)
-
     stack.Draw("hist")
     name = data.GetTitle()
     if name in labels:
@@ -155,14 +154,11 @@ def main(variable):
     stack.GetYaxis().SetTitle("N_{Events}")
     stack.SetMaximum(max(stack.GetMaximum(), data.GetMaximum()) * 1.4)
     stack.SetMinimum(1.0)
-    ROOT.TGaxis.SetExponentOffset(-0.08, 0.0, "Y")
 
     ggH.Draw("HIST SAME")
     qqH.Draw("HIST SAME")
 
     data.Draw("E1P SAME")
-    scaleData = 3.0
-    data.Scale(scaleData)
 
     # Add legend
     legend = ROOT.TLegend(0.4, 0.73, 0.90, 0.88)
@@ -173,7 +169,7 @@ def main(variable):
     legend.AddEntry(QCD, "QCD multijet", "f")
     legend.AddEntry(ggH, "gg#rightarrowH (x{:.0f})".format(scale_ggH), "l")
     legend.AddEntry(qqH, "qq#rightarrowH (x{:.0f})".format(scale_qqH), "l")
-    legend.AddEntry(data, "Data (x{:.0f})".format(scaleData), "lep")
+    legend.AddEntry(data, "Data", "lep")
     legend.SetBorderSize(0)
     legend.Draw()
 
@@ -182,9 +178,10 @@ def main(variable):
     latex.SetNDC()
     latex.SetTextSize(0.04)
     latex.SetTextFont(42)
-    latex.DrawLatex(0.6, 0.935, "11.6 fb^{-1} (2012, 8 TeV)")
+    latex.DrawLatex(0.6, 0.935, "  4.5 fb^{-1} (2012, 8 TeV)")
     latex.DrawLatex(0.16, 0.935, "#bf{CMS Open Data}")
 
+    # Save
     c.SaveAs("{}.pdf".format(variable))
     c.SaveAs("{}.png".format(variable))
 

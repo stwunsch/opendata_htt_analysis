@@ -25,14 +25,9 @@ def createDataFrame(name):
     return ROOT.ROOT.RDataFrame("Events", name + "Skim.root")
 
 
-def applyBaseline(df, lumi, samesign=False):
-    return df.Filter("q_1*q_2>0" if samesign else "q_1*q_2<0")\
-             .Define("plotting_weight", "weight * {}".format(float(lumi)))
-
-
 def bookHistogram(df, variable, range_):
     return df.Histo1D(ROOT.ROOT.RDF.TH1DModel(variable, variable, range_[0], range_[1], range_[2]),\
-                      variable, "plotting_weight")
+                      variable, "weight")
 
 
 def writeHistogram(h, name):
@@ -45,26 +40,27 @@ def main():
     tfile = ROOT.TFile("shapes.root", "RECREATE")
 
     variables = ranges.keys()
-    lumi = 11580.0
 
-    for name, label, lumi_ in [
-            ("GluGluToHToTauTau", "ggH", lumi),
-            ("VBF_HToTauTau", "qqH", lumi),
-            ("W1JetsToLNu", "W1J", lumi),
-            ("W2JetsToLNu", "W2J", lumi),
-            ("W3JetsToLNu", "W3J", lumi),
-            ("TTbar", "TT", lumi),
-            ("DYJetsToLL", "ZLL", lumi),
-            ("Run2012B_SingleMu", "dataRunB", 1.0),
+    for name, label in [
+            ("GluGluToHToTauTau", "ggH"),
+            ("VBF_HToTauTau", "qqH"),
+            ("W1JetsToLNu", "W1J"),
+            ("W2JetsToLNu", "W2J"),
+            ("W3JetsToLNu", "W3J"),
+            ("TTbar", "TT"),
+            ("DYJetsToLL", "ZLL"),
+            ("Run2012B_SingleMu", "dataRunB"),
         ]:
         df = createDataFrame(name)
 
-        df1 = applyBaseline(df, lumi_)
+        # Nominal
+        df1 = df.Filter("q_1*q_2<0")
         hists = {}
         for variable in variables:
             hists[variable] = bookHistogram(df1, variable, ranges[variable])
 
-        df2 = applyBaseline(df, lumi_, samesign=True)
+        # Same sign control region
+        df2 = df.Filter("q_1*q_2>0")
         hists_ss = {}
         for variable in variables:
             hists_ss[variable] = bookHistogram(df2, variable, ranges[variable])

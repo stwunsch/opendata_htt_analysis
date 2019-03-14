@@ -22,14 +22,15 @@ const std::vector<std::string> sampleNames = {
     //"Run2012C_SingleMu",
 };
 
+const float integratedLuminosity = 4.5 * 1000.0;
 std::map<std::string, float> eventWeights = {
-    {"GluGluToHToTauTau", 19.6 / 476963.0},
-    {"VBF_HToTauTau", 1.55 / 491653.0},
-    {"DYJetsToLL", 3503.7 / 30458871.0},
-    {"TTbar", 225.2 / 6423106.0},
-    {"W1JetsToLNu", 6381.2 / 29784800.0},
-    {"W2JetsToLNu", 2039.8 / 30693853.0},
-    {"W3JetsToLNu", 612.5 / 15241144.0},
+    {"GluGluToHToTauTau", 19.6 / 476963.0 * integratedLuminosity},
+    {"VBF_HToTauTau", 1.55 / 491653.0 * integratedLuminosity},
+    {"DYJetsToLL", 3503.7 / 30458871.0 * integratedLuminosity},
+    {"TTbar", 225.2 / 6423106.0 * integratedLuminosity},
+    {"W1JetsToLNu", 6381.2 / 29784800.0 * integratedLuminosity},
+    {"W2JetsToLNu", 2039.8 / 30693853.0 * integratedLuminosity},
+    {"W3JetsToLNu", 612.5 / 15241144.0 * integratedLuminosity},
     {"Run2012B_SingleMu", 1.0},
     {"Run2012C_SingleMu", 1.0},
 };
@@ -168,8 +169,6 @@ const std::vector<std::string> finalVariables = {
 };
 
 int main() {
-    //ROOT::EnableImplicitMT();
-
     for (const auto &sample : sampleNames) {
         std::cout << ">>> Process sample " << sample << ":" << std::endl;
         TStopwatch time;
