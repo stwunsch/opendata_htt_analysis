@@ -3,8 +3,8 @@ import ROOT
 
 default_nbins = 30
 ranges = {
-        "pt_1": (default_nbins, 30, 70),
-        "pt_2": (default_nbins, 30, 70),
+        "pt_1": (default_nbins, 20, 70),
+        "pt_2": (default_nbins, 22, 70),
         "eta_1": (default_nbins, -2.4, 2.4),
         "eta_2": (default_nbins, -2.4, 2.4),
         "phi_1": (default_nbins, -3.14, 3.14),
@@ -13,11 +13,27 @@ ranges = {
         "iso_2": (default_nbins, 0, 0.10),
         "q_1": (2, -2, 2),
         "q_2": (2, -2, 2),
-        "met": (default_nbins, 0, 80),
+        "met": (default_nbins, 0, 60),
         "m_1": (default_nbins, 0, 0.2),
         "m_2": (default_nbins, 0, 2),
         "dm_2": (11, 0, 11),
         "m_vis": (default_nbins, 70, 110),
+        "pt_vis": (default_nbins, 0, 60),
+        "jpt_1": (default_nbins, 20, 70),
+        "jpt_2": (default_nbins, 20, 70),
+        "jeta_1": (default_nbins, -2.4, 2.4),
+        "jeta_2": (default_nbins, -2.4, 2.4),
+        "jphi_1": (default_nbins, -3.14, 3.14),
+        "jphi_2": (default_nbins, -3.14, 3.14),
+        "jm_1": (default_nbins, 0, 20),
+        "jm_2": (default_nbins, 0, 20),
+        "jbtag_1": (default_nbins, 0, 1),
+        "jbtag_2": (default_nbins, 0, 1),
+        "npv": (25, 5, 30),
+        "njets": (default_nbins, 0, 30),
+        "mjj": (default_nbins, 0, 300),
+        "ptjj": (default_nbins, 0, 100),
+        "jdeta": (default_nbins, -4.8, 4.8),
         }
 
 

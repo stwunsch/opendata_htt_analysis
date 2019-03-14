@@ -18,7 +18,20 @@ labels = {
         "m_1": "Muon mass / GeV",
         "m_2": "Tau mass / GeV",
         "dm_2": "Tau decay mode",
-        "m_vis": "Visible di-#tau mass / GeV",
+        "m_vis": "Visible di-tau mass / GeV",
+        "pt_vis": "Visible di-tau p_{T} / GeV",
+        "mjj": "Di-jet mass / GeV",
+        "ptjj": "Di-jet p_{T} / GeV",
+        "jdeta": "Di-jet #Delta#eta",
+        "jpt_1": "Leading jet p_{T} / GeV",
+        "jpt_2": "Trailing jet p_{T} / GeV",
+        "jeta_1": "Leading jet #eta",
+        "jeta_2": "Trailing jet #eta",
+        "jphi_1": "Leading jet #phi",
+        "jphi_2": "Trailing jet #phi",
+        "jm_1": "Leading jet mass / GeV",
+        "jm_2": "Trailing jet mass / GeV",
+        "npv": "Number of primary vertices",
         }
 
 

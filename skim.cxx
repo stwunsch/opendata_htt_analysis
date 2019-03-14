@@ -46,12 +46,12 @@ auto MinimalSelection(T &df) {
 
 template <typename T>
 auto FindGoodMuons(T &df) {
-    return df.Define("goodMuons", "Muon_tightId == true && abs(Muon_eta) < 2.4");
+    return df.Define("goodMuons", "Muon_tightId == true && abs(Muon_eta) < 2.4 && Muon_pt > 20");
 }
 
 template <typename T>
 auto FindGoodTaus(T &df) {
-    return df.Define("goodTaus", "Tau_charge != 0 && Tau_decayMode >= 0 && abs(Tau_eta) < 2.4");
+    return df.Define("goodTaus", "Tau_charge != 0 && Tau_decayMode >= 0 && abs(Tau_eta) < 2.4 && Tau_pt > 22");
 }
 
 
@@ -129,14 +129,42 @@ auto FindMuonTauPair(T &df) {
 
 template <typename T>
 auto DeclareVariables(T &df) {
-    auto compute_mass = [](float pt_1, float eta_1, float phi_1, float mass_1,
+    auto add_p4 = [](float pt_1, float eta_1, float phi_1, float mass_1,
                            float pt_2, float eta_2, float phi_2, float mass_2)
     {
         TLorentzVector p1, p2;
         p1.SetPtEtaPhiM(pt_1, eta_1, phi_1, mass_1);
         p2.SetPtEtaPhiM(pt_2, eta_2, phi_2, mass_2);
-        return (p1 + p2).M();
+        return p1 + p2;
     };
+
+    using namespace ROOT::VecOps;
+    auto get_first = [](RVec<float> &x, RVec<int>& g)
+    {
+        if (Sum(g) >= 1) return x[g][0];
+        return -999.f;
+    };
+    auto get_second = [](RVec<float> &x, RVec<int>& g)
+    {
+        if (Sum(g) >= 2) return x[g][1];
+        return -999.f;
+    };
+    auto compute_mjj = [](TLorentzVector& p4, RVec<int>& g)
+    {
+        if (Sum(g) >= 2) return float(p4.M());
+        return -999.f;
+    };
+    auto compute_ptjj = [](TLorentzVector& p4, RVec<int>& g)
+    {
+        if (Sum(g) >= 2) return float(p4.Pt());
+        return -999.f;
+    };
+    auto compute_jdeta = [](float x, float y, RVec<int>& g)
+    {
+        if (Sum(g) >= 2) return x - y;
+        return -999.f;
+    };
+
     return df.Define("pt_1", "Muon_pt[idx_1]")
              .Define("eta_1", "Muon_eta[idx_1]")
              .Define("phi_1", "Muon_phi[idx_1]")
@@ -151,7 +179,28 @@ auto DeclareVariables(T &df) {
              .Define("q_2", "Tau_charge[idx_2]")
              .Define("dm_2", "Tau_decayMode[idx_2]")
              .Define("met", "MET_pt")
-             .Define("m_vis", compute_mass, {"pt_1", "eta_1", "phi_1", "m_1", "pt_2", "eta_2", "phi_2", "m_2"});
+             .Define("p4", add_p4,
+                     {"pt_1", "eta_1", "phi_1", "m_1", "pt_2", "eta_2", "phi_2", "m_2"})
+             .Define("m_vis", "float(p4.M())")
+             .Define("pt_vis", "float(p4.Pt())")
+             .Define("npv", "PV_npvs")
+             .Define("goodJets", "Jet_puId > 0 && abs(Jet_eta) < 2.4 && Jet_pt > 20")
+             .Define("njets", "Sum(goodJets)")
+             .Define("jpt_1", get_first, {"Jet_pt", "goodJets"})
+             .Define("jeta_1", get_first, {"Jet_eta", "goodJets"})
+             .Define("jphi_1", get_first, {"Jet_phi", "goodJets"})
+             .Define("jm_1", get_first, {"Jet_mass", "goodJets"})
+             .Define("jbtag_1", get_first, {"Jet_btag", "goodJets"})
+             .Define("jpt_2", get_second, {"Jet_pt", "goodJets"})
+             .Define("jeta_2", get_second, {"Jet_eta", "goodJets"})
+             .Define("jphi_2", get_second, {"Jet_phi", "goodJets"})
+             .Define("jm_2", get_second, {"Jet_mass", "goodJets"})
+             .Define("jbtag_2", get_second, {"Jet_btag", "goodJets"})
+             .Define("jp4", add_p4,
+                     {"jpt_1", "jeta_1", "jphi_1", "jm_1", "jpt_2", "jeta_2", "jphi_2", "jm_2"})
+             .Define("mjj", compute_mjj, {"jp4", "goodJets"})
+             .Define("ptjj", compute_ptjj, {"jp4", "goodJets"})
+             .Define("jdeta", compute_jdeta, {"jeta_1", "jeta_2", "goodJets"});
 }
 
 template <typename T>
@@ -161,10 +210,12 @@ auto AddEventWeight(T &df, const std::string& sample) {
 }
 
 const std::vector<std::string> finalVariables = {
-    "nMuon", "nTau",
+    "njets", "npv",
     "pt_1", "eta_1", "phi_1", "m_1", "iso_1", "q_1",
     "pt_2", "eta_2", "phi_2", "m_2", "iso_2", "q_2", "dm_2",
-    "met", "m_vis",
+    "jpt_1", "jeta_1", "jphi_1", "jm_1", "jbtag_1",
+    "jpt_2", "jeta_2", "jphi_2", "jm_2", "jbtag_2",
+    "met", "m_vis", "pt_vis", "mjj", "ptjj", "jdeta",
     "weight"
 };
 
