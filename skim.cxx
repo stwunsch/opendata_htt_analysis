@@ -24,7 +24,7 @@ const std::vector<std::string> sampleNames = {
     */
 };
 
-const float integratedLuminosity = 4.7 * 1000.0;
+const float integratedLuminosity = 4.429 * 1000.0;
 std::map<std::string, float> eventWeights = {
     {"GluGluToHToTauTau", 19.6 / 476963.0 * integratedLuminosity},
     {"VBF_HToTauTau", 1.55 / 491653.0 * integratedLuminosity},
