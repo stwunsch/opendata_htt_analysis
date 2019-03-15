@@ -31,6 +31,8 @@ labels = {
         "jphi_2": "Trailing jet #phi",
         "jm_1": "Leading jet mass / GeV",
         "jm_2": "Trailing jet mass / GeV",
+        "jbtag_1": "Leading jet b-tag / GeV",
+        "jbtag_2": "Trailing jet b-tag / GeV",
         "npv": "Number of primary vertices",
         }
 
@@ -191,7 +193,7 @@ def main(variable):
     latex.SetNDC()
     latex.SetTextSize(0.04)
     latex.SetTextFont(42)
-    latex.DrawLatex(0.6, 0.935, "  4.5 fb^{-1} (2012, 8 TeV)")
+    latex.DrawLatex(0.6, 0.935, "  4.7 fb^{-1} (2012, 8 TeV)")
     latex.DrawLatex(0.16, 0.935, "#bf{CMS Open Data}")
 
     # Save

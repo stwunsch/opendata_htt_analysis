@@ -19,10 +19,12 @@ const std::vector<std::string> sampleNames = {
     "W2JetsToLNu",
     "W3JetsToLNu",
     "Run2012B_SingleMu",
-    //"Run2012C_SingleMu",
+    /*
+    "Run2012C_SingleMu",
+    */
 };
 
-const float integratedLuminosity = 4.5 * 1000.0;
+const float integratedLuminosity = 4.7 * 1000.0;
 std::map<std::string, float> eventWeights = {
     {"GluGluToHToTauTau", 19.6 / 476963.0 * integratedLuminosity},
     {"VBF_HToTauTau", 1.55 / 491653.0 * integratedLuminosity},
@@ -65,10 +67,8 @@ template <typename T>
 auto FindMuonTauPair(T &df) {
     using namespace ROOT::VecOps;
     return df.Define("pairIdx",
-                     [](RVec<int>& goodMuons,
-                        RVec<float>& pt_1, RVec<float>& eta_1, RVec<float>& phi_1,
-                        RVec<int>& goodTaus,
-                        RVec<float>& eta_2, RVec<float>& phi_2,
+                     [](RVec<int>& goodMuons, RVec<float>& pt_1, RVec<float>& eta_1, RVec<float>& phi_1,
+                        RVec<int>& goodTaus, RVec<float>& pt_2, RVec<float>& eta_2, RVec<float>& phi_2,
                         RVec<float>& niso, RVec<float>& ciso)
                          {
                              // Get indices of all possible combinations
@@ -76,15 +76,16 @@ auto FindMuonTauPair(T &df) {
                              const auto numComb = comb[0].size();
 
                              // Find valid pairs based on delta r
-                             std::vector<int> validPair(numComb);
-                             auto deltar = sqrt(
-                                     pow(Take(eta_1, comb[0]) - Take(eta_2, comb[1]), 2) +
-                                     pow(Take(phi_1, comb[0]) - Take(phi_2, comb[1]), 2));
+                             std::vector<int> validPair(numComb, 0);
                              for(size_t i = 0; i < numComb; i++) {
-                                 if(goodTaus[i] == 1 && goodMuons[i] == 1 && deltar[i] > 0.5) {
-                                     validPair[i] = 1;
-                                 } else {
-                                     validPair[i] = 0;
+                                 const auto i1 = comb[0][i];
+                                 const auto i2 = comb[1][i];
+                                 if(goodMuons[i1] == 1 && goodTaus[i2] == 1) {
+                                     const auto deltar = sqrt(
+                                             pow(eta_1[i1] - eta_2[i2], 2) + pow(phi_1[i1] - phi_2[i2], 2));
+                                     if (deltar > 0.5) {
+                                         validPair[i] = 1;
+                                     }
                                  }
                              }
 
@@ -103,7 +104,7 @@ auto FindMuonTauPair(T &df) {
                              // Find best tau based on iso
                              int idx_2 = -1;
                              float minIso = 999;
-                             const auto iso = niso + ciso;
+                             const auto iso = (niso + ciso) / pt_2;
                              for(size_t i = 0; i < numComb; i++) {
                                  if(validPair[i] == 0) continue;
                                  if(int(comb[0][i]) != idx_1) continue;
@@ -116,11 +117,8 @@ auto FindMuonTauPair(T &df) {
 
                              return std::vector<int>({idx_1, idx_2});
                          },
-                     {"goodMuons",
-                      "Muon_pt", "Muon_eta", "Muon_phi",
-                      "goodTaus",
-                      "Tau_eta", "Tau_phi",
-                      "Tau_chargedIso", "Tau_neutralIso"})
+                     {"goodMuons", "Muon_pt", "Muon_eta", "Muon_phi",
+                      "goodTaus", "Tau_pt", "Tau_eta", "Tau_phi", "Tau_chargedIso", "Tau_neutralIso"})
              .Define("idx_1", "pairIdx[0]")
              .Define("idx_2", "pairIdx[1]")
              .Filter("idx_1 != -1", "Valid muon in selected pair")
@@ -220,6 +218,8 @@ const std::vector<std::string> finalVariables = {
 };
 
 int main() {
+    ROOT::EnableImplicitMT(2);
+
     for (const auto &sample : sampleNames) {
         std::cout << ">>> Process sample " << sample << ":" << std::endl;
         TStopwatch time;

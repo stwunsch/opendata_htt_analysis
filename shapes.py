@@ -27,8 +27,8 @@ ranges = {
         "jphi_2": (default_nbins, -3.14, 3.14),
         "jm_1": (default_nbins, 0, 20),
         "jm_2": (default_nbins, 0, 20),
-        "jbtag_1": (default_nbins, 0, 1),
-        "jbtag_2": (default_nbins, 0, 1),
+        "jbtag_1": (default_nbins, 0, 0.2),
+        "jbtag_2": (default_nbins, 0, 0.2),
         "npv": (25, 5, 30),
         "njets": (default_nbins, 0, 30),
         "mjj": (default_nbins, 0, 300),
@@ -52,7 +52,7 @@ def writeHistogram(h, name):
 
 
 def main():
-    ROOT.ROOT.EnableImplicitMT()
+    ROOT.ROOT.EnableImplicitMT(2)
     tfile = ROOT.TFile("shapes.root", "RECREATE")
 
     variables = ranges.keys()
