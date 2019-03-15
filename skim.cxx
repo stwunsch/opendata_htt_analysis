@@ -219,6 +219,8 @@ const std::vector<std::string> finalVariables = {
 
 int main() {
     ROOT::EnableImplicitMT(2);
+    const auto poolSize = ROOT::GetImplicitMTPoolSize();
+    std::cout << "Pool size: " << poolSize << std::endl;
 
     for (const auto &sample : sampleNames) {
         std::cout << ">>> Process sample " << sample << ":" << std::endl;

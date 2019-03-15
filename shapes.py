@@ -53,8 +53,10 @@ def writeHistogram(h, name):
 
 def main():
     ROOT.ROOT.EnableImplicitMT(2)
-    tfile = ROOT.TFile("shapes.root", "RECREATE")
+    poolSize = ROOT.ROOT.GetImplicitMTPoolSize()
+    print("Pool size: {}".format(poolSize))
 
+    tfile = ROOT.TFile("shapes.root", "RECREATE")
     variables = ranges.keys()
 
     for name, label in [
@@ -69,13 +71,11 @@ def main():
         ]:
         df = createDataFrame(name)
 
-        # Nominal
         df1 = df.Filter("q_1*q_2<0")
         hists = {}
         for variable in variables:
             hists[variable] = bookHistogram(df1, variable, ranges[variable])
 
-        # Same sign control region
         df2 = df.Filter("q_1*q_2>0")
         hists_ss = {}
         for variable in variables:
