@@ -8,7 +8,7 @@
 #include <vector>
 #include <iostream>
 
-const std::string samplesBasePath = "/home/stefan/cms_opendata_samples/";
+const std::string samplesBasePath = "/home/stefan/opendata_samples/";
 
 const std::vector<std::string> sampleNames = {
     "GluGluToHToTauTau",
@@ -19,12 +19,10 @@ const std::vector<std::string> sampleNames = {
     "W2JetsToLNu",
     "W3JetsToLNu",
     "Run2012B_SingleMu",
-    /*
     "Run2012C_SingleMu",
-    */
 };
 
-const float integratedLuminosity = 4.429 * 1000.0;
+const float integratedLuminosity = 11.467 * 1000.0;
 std::map<std::string, float> eventWeights = {
     {"GluGluToHToTauTau", 19.6 / 476963.0 * integratedLuminosity},
     {"VBF_HToTauTau", 1.55 / 491653.0 * integratedLuminosity},
@@ -68,8 +66,7 @@ auto FindMuonTauPair(T &df) {
     using namespace ROOT::VecOps;
     return df.Define("pairIdx",
                      [](RVec<int>& goodMuons, RVec<float>& pt_1, RVec<float>& eta_1, RVec<float>& phi_1,
-                        RVec<int>& goodTaus, RVec<float>& pt_2, RVec<float>& eta_2, RVec<float>& phi_2,
-                        RVec<float>& niso, RVec<float>& ciso)
+                        RVec<int>& goodTaus, RVec<float>& iso_2, RVec<float>& eta_2, RVec<float>& phi_2)
                          {
                              // Get indices of all possible combinations
                              auto comb = Combinations(pt_1, eta_2);
@@ -104,13 +101,12 @@ auto FindMuonTauPair(T &df) {
                              // Find best tau based on iso
                              int idx_2 = -1;
                              float minIso = 999;
-                             const auto iso = (niso + ciso) / pt_2;
                              for(size_t i = 0; i < numComb; i++) {
                                  if(validPair[i] == 0) continue;
                                  if(int(comb[0][i]) != idx_1) continue;
                                  const auto tmp = comb[1][i];
-                                 if(minIso > iso[tmp]) {
-                                     minIso = iso[tmp];
+                                 if(minIso > iso_2[tmp]) {
+                                     minIso = iso_2[tmp];
                                      idx_2 = tmp;
                                  }
                              }
@@ -118,7 +114,7 @@ auto FindMuonTauPair(T &df) {
                              return std::vector<int>({idx_1, idx_2});
                          },
                      {"goodMuons", "Muon_pt", "Muon_eta", "Muon_phi",
-                      "goodTaus", "Tau_pt", "Tau_eta", "Tau_phi", "Tau_chargedIso", "Tau_neutralIso"})
+                      "goodTaus", "Tau_relIso_all", "Tau_eta", "Tau_phi"})
              .Define("idx_1", "pairIdx[0]")
              .Define("idx_2", "pairIdx[1]")
              .Filter("idx_1 != -1", "Valid muon in selected pair")
@@ -173,7 +169,7 @@ auto DeclareVariables(T &df) {
              .Define("eta_2", "Tau_eta[idx_2]")
              .Define("phi_2", "Tau_phi[idx_2]")
              .Define("m_2", "Tau_mass[idx_2]")
-             .Define("iso_2", "(Tau_chargedIso[idx_2] + Tau_neutralIso[idx_2]) / Tau_pt[idx_2]")
+             .Define("iso_2", "Tau_relIso_all[idx_2]")
              .Define("q_2", "Tau_charge[idx_2]")
              .Define("dm_2", "Tau_decayMode[idx_2]")
              .Define("met", "MET_pt")
@@ -182,7 +178,7 @@ auto DeclareVariables(T &df) {
              .Define("m_vis", "float(p4.M())")
              .Define("pt_vis", "float(p4.Pt())")
              .Define("npv", "PV_npvs")
-             .Define("goodJets", "Jet_puId > 0 && abs(Jet_eta) < 2.4 && Jet_pt > 20")
+             .Define("goodJets", "Jet_tightId > 0 && abs(Jet_eta) < 2.4 && Jet_pt > 20")
              .Define("njets", "Sum(goodJets)")
              .Define("jpt_1", get_first, {"Jet_pt", "goodJets"})
              .Define("jeta_1", get_first, {"Jet_eta", "goodJets"})

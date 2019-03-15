@@ -68,6 +68,7 @@ def main():
             ("TTbar", "TT"),
             ("DYJetsToLL", "ZLL"),
             ("Run2012B_SingleMu", "dataRunB"),
+            ("Run2012C_SingleMu", "dataRunC"),
         ]:
         df = createDataFrame(name)
 

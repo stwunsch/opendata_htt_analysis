@@ -126,9 +126,13 @@ def main(variable):
 
     # Data
     data = getHistogram(tfile, "dataRunB", variable)
+    dataRunC = getHistogram(tfile, "dataRunC", variable)
+    data.Add(dataRunC)
 
     # Data-driven QCD estimation
     QCD = getHistogram(tfile, "dataRunB", variable, "_ss")
+    QCDRunC = getHistogram(tfile, "dataRunB", variable, "_ss")
+    QCD.Add(QCDRunC)
     for name in ["W1J", "W2J", "W3J", "TT", "ZLL"]:
         ss = getHistogram(tfile, name, variable, "_ss")
         QCD.Add(ss, -1.0)
@@ -193,7 +197,7 @@ def main(variable):
     latex.SetNDC()
     latex.SetTextSize(0.04)
     latex.SetTextFont(42)
-    latex.DrawLatex(0.6, 0.935, "  4.4 fb^{-1} (2012, 8 TeV)")
+    latex.DrawLatex(0.6, 0.935, "11.5 fb^{-1} (2012, 8 TeV)")
     latex.DrawLatex(0.16, 0.935, "#bf{CMS Open Data}")
 
     # Save
