@@ -8,7 +8,7 @@
 #include <vector>
 #include <iostream>
 
-const std::string samplesBasePath = "/home/stefan/opendata_samples/";
+const std::string samplesBasePath = "/ceph/wunsch/opendata_samples/";
 
 const std::vector<std::string> sampleNames = {
     "GluGluToHToTauTau",
@@ -37,7 +37,7 @@ std::map<std::string, float> eventWeights = {
 
 template <typename T>
 auto MinimalSelection(T &df) {
-    return df.Filter("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v2", "Passes trigger")
+    return df.Filter("HLT_IsoMu17_eta2p1_LooseIsoPFTau20", "Passes trigger")
              .Filter("nMuon > 0", "nMuon > 0")
              .Filter("nTau > 0", "nTau > 0")
              .Filter("Muon_pt[0] < 1000", "Sanity check Muon_pt")
