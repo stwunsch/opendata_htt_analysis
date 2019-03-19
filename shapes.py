@@ -52,7 +52,7 @@ def writeHistogram(h, name):
 
 
 def main():
-    ROOT.ROOT.EnableImplicitMT(2)
+    ROOT.ROOT.EnableImplicitMT(24)
     poolSize = ROOT.ROOT.GetImplicitMTPoolSize()
     print("Pool size: {}".format(poolSize))
 
