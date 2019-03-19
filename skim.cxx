@@ -178,7 +178,7 @@ auto DeclareVariables(T &df) {
              .Define("m_vis", "float(p4.M())")
              .Define("pt_vis", "float(p4.Pt())")
              .Define("npv", "PV_npvs")
-             .Define("goodJets", "Jet_tightId > 0 && abs(Jet_eta) < 2.4 && Jet_pt > 20")
+             .Define("goodJets", "Jet_puId == true && abs(Jet_eta) < 2.4 && Jet_pt > 20")
              .Define("njets", "Sum(goodJets)")
              .Define("jpt_1", get_first, {"Jet_pt", "goodJets"})
              .Define("jeta_1", get_first, {"Jet_eta", "goodJets"})
@@ -214,7 +214,7 @@ const std::vector<std::string> finalVariables = {
 };
 
 int main() {
-    ROOT::EnableImplicitMT(2);
+    ROOT::EnableImplicitMT(24);
     const auto poolSize = ROOT::GetImplicitMTPoolSize();
     std::cout << "Pool size: " << poolSize << std::endl;
 
