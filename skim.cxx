@@ -22,7 +22,9 @@ const std::vector<std::string> sampleNames = {
     "Run2012C_SingleMu",
 };
 
-//const float integratedLuminosity = 11.467 * 1000.0;
+//const float integratedLuminosity = 4.412 * 1000.0; // Run2012B only
+//const float integratedLuminosity = 7.055 * 1000.0; // Run2012C only
+//const float integratedLuminosity = 11.467 * 1000.0; // Run2012B+C
 const float integratedLuminosity = 12.38 * 1000.0;
 std::map<std::string, float> eventWeights = {
     {"GluGluToHToTauTau", 19.6 / 476963.0 * integratedLuminosity},
