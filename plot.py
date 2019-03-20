@@ -140,6 +140,8 @@ def main(variable):
     for i in range(1, QCD.GetNbinsX() + 1):
         if QCD.GetBinContent(i) < 0.0:
             QCD.SetBinContent(i, 0.0)
+    QCDScaleFactor = 1.50
+    QCD.Scale(QCDScaleFactor)
 
     # Draw histograms
     data.SetMarkerStyle(20)

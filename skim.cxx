@@ -47,7 +47,7 @@ auto MinimalSelection(T &df) {
 
 template <typename T>
 auto FindGoodMuons(T &df) {
-    return df.Define("goodMuons", "Muon_tightId == true && abs(Muon_eta) < 2.4 && Muon_pt > 25");
+    return df.Define("goodMuons", "Muon_tightId == true && abs(Muon_eta) < 2.1 && Muon_pt > 25");
 }
 
 template <typename T>

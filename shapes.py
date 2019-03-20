@@ -5,7 +5,7 @@ default_nbins = 30
 ranges = {
         "pt_1": (default_nbins, 25, 70),
         "pt_2": (default_nbins, 25, 70),
-        "eta_1": (default_nbins, -2.4, 2.4),
+        "eta_1": (default_nbins, -2.1, 2.1),
         "eta_2": (default_nbins, -2.4, 2.4),
         "phi_1": (default_nbins, -3.14, 3.14),
         "phi_2": (default_nbins, -3.14, 3.14),
