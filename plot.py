@@ -1,5 +1,5 @@
 import ROOT
-#ROOT.PyConfig.IgnoreCommandLineOptions = True
+ROOT.PyConfig.IgnoreCommandLineOptions = True
 import argparse
 
 
@@ -34,6 +34,7 @@ labels = {
         "jbtag_1": "Leading jet b-tag / GeV",
         "jbtag_2": "Trailing jet b-tag / GeV",
         "npv": "Number of primary vertices",
+        "njets": "Number of jets",
         }
 
 
@@ -197,7 +198,7 @@ def main(variable):
     latex.SetNDC()
     latex.SetTextSize(0.04)
     latex.SetTextFont(42)
-    latex.DrawLatex(0.6, 0.935, "11.5 fb^{-1} (2012, 8 TeV)")
+    latex.DrawLatex(0.6, 0.935, "12.4 fb^{-1} (2012, 8 TeV)")
     latex.DrawLatex(0.16, 0.935, "#bf{CMS Open Data}")
 
     # Save

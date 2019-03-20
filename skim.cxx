@@ -22,7 +22,8 @@ const std::vector<std::string> sampleNames = {
     "Run2012C_SingleMu",
 };
 
-const float integratedLuminosity = 11.467 * 1000.0;
+//const float integratedLuminosity = 11.467 * 1000.0;
+const float integratedLuminosity = 12.38 * 1000.0;
 std::map<std::string, float> eventWeights = {
     {"GluGluToHToTauTau", 19.6 / 476963.0 * integratedLuminosity},
     {"VBF_HToTauTau", 1.55 / 491653.0 * integratedLuminosity},
@@ -46,12 +47,12 @@ auto MinimalSelection(T &df) {
 
 template <typename T>
 auto FindGoodMuons(T &df) {
-    return df.Define("goodMuons", "Muon_tightId == true && abs(Muon_eta) < 2.4 && Muon_pt > 20");
+    return df.Define("goodMuons", "Muon_tightId == true && abs(Muon_eta) < 2.4 && Muon_pt > 25");
 }
 
 template <typename T>
 auto FindGoodTaus(T &df) {
-    return df.Define("goodTaus", "Tau_charge != 0 && Tau_decayMode >= 0 && abs(Tau_eta) < 2.4 && Tau_pt > 22");
+    return df.Define("goodTaus", "Tau_charge != 0 && Tau_decayMode >= 0 && abs(Tau_eta) < 2.4 && Tau_pt > 25");
 }
 
 

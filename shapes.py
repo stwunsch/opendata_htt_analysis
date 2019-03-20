@@ -3,8 +3,8 @@ import ROOT
 
 default_nbins = 30
 ranges = {
-        "pt_1": (default_nbins, 20, 70),
-        "pt_2": (default_nbins, 22, 70),
+        "pt_1": (default_nbins, 25, 70),
+        "pt_2": (default_nbins, 25, 70),
         "eta_1": (default_nbins, -2.4, 2.4),
         "eta_2": (default_nbins, -2.4, 2.4),
         "phi_1": (default_nbins, -3.14, 3.14),
@@ -27,10 +27,10 @@ ranges = {
         "jphi_2": (default_nbins, -3.14, 3.14),
         "jm_1": (default_nbins, 0, 20),
         "jm_2": (default_nbins, 0, 20),
-        "jbtag_1": (default_nbins, 0, 0.2),
-        "jbtag_2": (default_nbins, 0, 0.2),
+        "jbtag_1": (default_nbins, 0, 1.0),
+        "jbtag_2": (default_nbins, 0, 1.0),
         "npv": (25, 5, 30),
-        "njets": (default_nbins, 0, 30),
+        "njets": (5, 0, 5),
         "mjj": (default_nbins, 0, 300),
         "ptjj": (default_nbins, 0, 100),
         "jdeta": (default_nbins, -4.8, 4.8),
