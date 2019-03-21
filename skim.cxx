@@ -227,7 +227,7 @@ const std::vector<std::string> finalVariables = {
     "jpt_1", "jeta_1", "jphi_1", "jm_1", "jbtag_1",
     "jpt_2", "jeta_2", "jphi_2", "jm_2", "jbtag_2",
     "met", "m_vis", "pt_vis", "mjj", "ptjj", "jdeta",
-    "weight"
+    "run", "weight"
 };
 
 int main() {
