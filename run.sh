@@ -8,7 +8,7 @@ time bash build.sh
 time ./skim.out
 
 # Produce histograms for plotting
-time python shapes.py
+time python histograms.py
 
 # Make plots
 time python plot.py
