@@ -140,7 +140,7 @@ def main(variable):
     for i in range(1, QCD.GetNbinsX() + 1):
         if QCD.GetBinContent(i) < 0.0:
             QCD.SetBinContent(i, 0.0)
-    QCDScaleFactor = 1.50
+    QCDScaleFactor = 1.00
     QCD.Scale(QCDScaleFactor)
 
     # Draw histograms
@@ -149,9 +149,9 @@ def main(variable):
     ggH.SetLineColor(colors["ggH"])
     qqH.SetLineColor(colors["qqH"])
 
-    scale_ggH = 200.0
+    scale_ggH = 10.0
     ggH.Scale(scale_ggH)
-    scale_qqH = 2000.0
+    scale_qqH = 100.0
     qqH.Scale(scale_qqH)
 
     for x in [ggH, qqH]:

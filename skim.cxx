@@ -24,8 +24,7 @@ const std::vector<std::string> sampleNames = {
 
 //const float integratedLuminosity = 4.412 * 1000.0; // Run2012B only
 //const float integratedLuminosity = 7.055 * 1000.0; // Run2012C only
-//const float integratedLuminosity = 11.467 * 1000.0; // Run2012B+C
-const float integratedLuminosity = 12.38 * 1000.0;
+const float integratedLuminosity = 11.467 * 1000.0; // Run2012B+C
 std::map<std::string, float> eventWeights = {
     {"GluGluToHToTauTau", 19.6 / 476963.0 * integratedLuminosity},
     {"VBF_HToTauTau", 1.55 / 491653.0 * integratedLuminosity},
@@ -54,7 +53,9 @@ auto FindGoodMuons(T &df) {
 
 template <typename T>
 auto FindGoodTaus(T &df) {
-    return df.Define("goodTaus", "Tau_charge != 0 && Tau_decayMode >= 0 && abs(Tau_eta) < 2.4 && Tau_pt > 25");
+    return df.Define("goodTaus",
+            "Tau_charge != 0 && abs(Tau_eta) < 2.4 && Tau_pt > 25 &&\
+             Tau_idDecayMode && Tau_idIsoTight && Tau_idAntiEleTight && Tau_idAntiMuTight");
 }
 
 
