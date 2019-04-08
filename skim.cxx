@@ -232,7 +232,7 @@ const std::vector<std::string> finalVariables = {
 };
 
 int main() {
-    ROOT::EnableImplicitMT(24);
+    ROOT::EnableImplicitMT();
     const auto poolSize = ROOT::GetImplicitMTPoolSize();
     std::cout << "Pool size: " << poolSize << std::endl;
 

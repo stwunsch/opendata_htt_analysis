@@ -57,7 +57,7 @@ def getHistogram(tfile, name, variable, tag=""):
 
 
 def main(variable):
-    tfile = ROOT.TFile("shapes.root", "READ")
+    tfile = ROOT.TFile("histograms.root", "READ")
 
     # Styles
     ROOT.gStyle.SetOptStat(0)

@@ -52,11 +52,11 @@ def writeHistogram(h, name):
 
 
 def main():
-    ROOT.ROOT.EnableImplicitMT(24)
+    ROOT.ROOT.EnableImplicitMT()
     poolSize = ROOT.ROOT.GetImplicitMTPoolSize()
     print("Pool size: {}".format(poolSize))
 
-    tfile = ROOT.TFile("shapes.root", "RECREATE")
+    tfile = ROOT.TFile("histograms.root", "RECREATE")
     variables = ranges.keys()
 
     for name, label in [
