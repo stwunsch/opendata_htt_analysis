@@ -67,17 +67,26 @@ def main():
             ("W3JetsToLNu", "W3J"),
             ("TTbar", "TT"),
             ("DYJetsToLL", "ZLL"),
+            ("DYJetsToLL", "ZTT"),
             ("Run2012B_SingleMu", "dataRunB"),
             ("Run2012C_SingleMu", "dataRunC"),
         ]:
         df = createDataFrame(name)
 
         df1 = df.Filter("q_1*q_2<0")
+        if label is "ZLL":
+            df1 = df1.Filter("gen_match == false")
+        elif label is "ZTT":
+            df1 = df1.Filter("gen_match == true")
         hists = {}
         for variable in variables:
             hists[variable] = bookHistogram(df1, variable, ranges[variable])
 
         df2 = df.Filter("q_1*q_2>0")
+        if label is "ZLL":
+            df2 = df2.Filter("gen_match == false")
+        elif label is "ZTT":
+            df2 = df2.Filter("gen_match == true")
         hists_ss = {}
         for variable in variables:
             hists_ss[variable] = bookHistogram(df2, variable, ranges[variable])
