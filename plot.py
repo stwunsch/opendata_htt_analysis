@@ -44,7 +44,8 @@ colors = {
         "TT": ROOT.TColor.GetColor(155, 152, 204),
         "W": ROOT.TColor.GetColor(222, 90, 106),
         "QCD":  ROOT.TColor.GetColor(250, 202, 255),
-        "ZLL": ROOT.TColor.GetColor(248, 206, 104),
+        "ZLL": ROOT.TColor.GetColor(100, 192, 232),
+        "ZTT": ROOT.TColor.GetColor(248, 206, 104),
         }
 
 
@@ -125,6 +126,8 @@ def main(variable):
 
     ZLL = getHistogram(tfile, "ZLL", variable)
 
+    ZTT = getHistogram(tfile, "ZTT", variable)
+
     # Data
     data = getHistogram(tfile, "dataRunB", variable)
     dataRunC = getHistogram(tfile, "dataRunC", variable)
@@ -134,7 +137,7 @@ def main(variable):
     QCD = getHistogram(tfile, "dataRunB", variable, "_ss")
     QCDRunC = getHistogram(tfile, "dataRunB", variable, "_ss")
     QCD.Add(QCDRunC)
-    for name in ["W1J", "W2J", "W3J", "TT", "ZLL"]:
+    for name in ["W1J", "W2J", "W3J", "TT", "ZLL", "ZTT"]:
         ss = getHistogram(tfile, name, variable, "_ss")
         QCD.Add(ss, -1.0)
     for i in range(1, QCD.GetNbinsX() + 1):
@@ -157,12 +160,12 @@ def main(variable):
     for x in [ggH, qqH]:
         x.SetLineWidth(3)
 
-    for x, l in [(QCD, "QCD"), (TT, "TT"), (ZLL, "ZLL"), (W, "W")]:
+    for x, l in [(QCD, "QCD"), (TT, "TT"), (ZLL, "ZLL"), (ZTT, "ZTT"), (W, "W")]:
         x.SetLineWidth(0)
         x.SetFillColor(colors[l])
 
     stack = ROOT.THStack("", "")
-    for x in [QCD, TT, W, ZLL]:
+    for x in [QCD, TT, W, ZLL, ZTT]:
         stack.Add(x)
 
     c = ROOT.TCanvas("", "", 600, 600)
@@ -188,6 +191,7 @@ def main(variable):
     legend.AddEntry(W, "W+jets", "f")
     legend.AddEntry(TT, "t#bar{t}", "f")
     legend.AddEntry(ZLL, "Z#rightarrowll", "f")
+    legend.AddEntry(ZTT, "Z#rightarrow#tau#tau", "f")
     legend.AddEntry(QCD, "QCD multijet", "f")
     legend.AddEntry(ggH, "gg#rightarrowH (x{:.0f})".format(scale_ggH), "l")
     legend.AddEntry(qqH, "qq#rightarrowH (x{:.0f})".format(scale_qqH), "l")
