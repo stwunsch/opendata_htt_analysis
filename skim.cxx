@@ -8,7 +8,9 @@
 #include <vector>
 #include <iostream>
 
-const std::string samplesBasePath = "/ceph/wunsch/opendata_samples/";
+
+const std::string samplesBasePath = "/home/stefan/opendata_samples/";
+
 
 const std::vector<std::string> sampleNames = {
     "GluGluToHToTauTau",
@@ -21,6 +23,7 @@ const std::vector<std::string> sampleNames = {
     "Run2012B_SingleMu",
     "Run2012C_SingleMu",
 };
+
 
 //const float integratedLuminosity = 4.412 * 1000.0; // Run2012B only
 //const float integratedLuminosity = 7.055 * 1000.0; // Run2012C only
@@ -37,6 +40,7 @@ std::map<std::string, float> eventWeights = {
     {"Run2012C_SingleMu", 1.0},
 };
 
+
 template <typename T>
 auto MinimalSelection(T &df) {
     return df.Filter("HLT_IsoMu17_eta2p1_LooseIsoPFTau20", "Passes trigger")
@@ -46,10 +50,12 @@ auto MinimalSelection(T &df) {
              .Filter("Tau_pt[0] < 1000", "Sanity check Tau_pt");
 }
 
+
 template <typename T>
 auto FindGoodMuons(T &df) {
     return df.Define("goodMuons", "Muon_tightId == true && abs(Muon_eta) < 2.1 && Muon_pt > 25");
 }
+
 
 template <typename T>
 auto FindGoodTaus(T &df) {
@@ -65,18 +71,6 @@ auto FilterGoodEvents(T &df) {
              .Filter("Sum(goodMuons) > 0", "Event has good muons");
 }
 
-template <typename T>
-float DeltaPhi(T v1, T v2, const T c = M_PI)
-{
-    auto r = std::fmod(v2 - v1, 2.0 * c);
-    if (r < -c) {
-        r += 2.0 * c;
-    }
-    else if (r > c) {
-        r -= 2.0 * c;
-    }
-    return r;
-}
 
 template <typename T>
 auto FindMuonTauPair(T &df) {
@@ -138,6 +132,7 @@ auto FindMuonTauPair(T &df) {
              .Filter("idx_1 != -1", "Valid muon in selected pair")
              .Filter("idx_2 != -1", "Valid tau in selected pair");
 }
+
 
 template <typename T>
 auto DeclareVariables(T &df) {
@@ -215,11 +210,24 @@ auto DeclareVariables(T &df) {
              .Define("jdeta", compute_jdeta, {"jeta_1", "jeta_2", "goodJets"});
 }
 
+
 template <typename T>
 auto AddEventWeight(T &df, const std::string& sample) {
     const auto weight = eventWeights[sample];
     return df.Define("weight", [weight](){ return weight; });
 }
+
+
+template <typename T>
+auto CheckGeneratorTaus(T &df, const std::string& sample) {
+    if (sample.find("Run2012") == 0) {
+        return df.Define("gen_match", "false");
+    } else {
+        return df.Define("gen_match",
+                         "abs(GenPart_pdgId[Tau_genPartIdx[idx_1]]) == 15 && abs(GenPart_pdgId[Tau_genPartIdx[idx_2]]) == 15");
+    }
+}
+
 
 const std::vector<std::string> finalVariables = {
     "njets", "npv",
@@ -228,8 +236,9 @@ const std::vector<std::string> finalVariables = {
     "jpt_1", "jeta_1", "jphi_1", "jm_1", "jbtag_1",
     "jpt_2", "jeta_2", "jphi_2", "jm_2", "jbtag_2",
     "met", "m_vis", "pt_vis", "mjj", "ptjj", "jdeta",
-    "run", "weight"
+    "gen_match", "run", "weight"
 };
+
 
 int main() {
     ROOT::EnableImplicitMT();
@@ -250,9 +259,10 @@ int main() {
         auto df5 = FilterGoodEvents(df4);
         auto df6 = FindMuonTauPair(df5);
         auto df7 = DeclareVariables(df6);
-        auto df8 = AddEventWeight(df7, sample);
+        auto df8 = CheckGeneratorTaus(df7, sample);
+        auto df9 = AddEventWeight(df8, sample);
 
-        auto dfFinal = df8;
+        auto dfFinal = df9;
         auto report = dfFinal.Report();
         dfFinal.Snapshot("Events", sample + "Skim.root", finalVariables);
         time.Stop();
