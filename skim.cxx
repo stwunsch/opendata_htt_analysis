@@ -20,8 +20,8 @@ const std::vector<std::string> sampleNames = {
     "W1JetsToLNu",
     "W2JetsToLNu",
     "W3JetsToLNu",
-    "Run2012B_SingleMu",
-    "Run2012C_SingleMu",
+    "Run2012B_TauPlusX",
+    "Run2012C_TauPlusX",
 };
 
 
@@ -36,8 +36,8 @@ std::map<std::string, float> eventWeights = {
     {"W1JetsToLNu", 6381.2 / 29784800.0 * integratedLuminosity},
     {"W2JetsToLNu", 2039.8 / 30693853.0 * integratedLuminosity},
     {"W3JetsToLNu", 612.5 / 15241144.0 * integratedLuminosity},
-    {"Run2012B_SingleMu", 1.0},
-    {"Run2012C_SingleMu", 1.0},
+    {"Run2012B_TauPlusX", 1.0},
+    {"Run2012C_TauPlusX", 1.0},
 };
 
 

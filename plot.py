@@ -135,7 +135,7 @@ def main(variable):
 
     # Data-driven QCD estimation
     QCD = getHistogram(tfile, "dataRunB", variable, "_ss")
-    QCDRunC = getHistogram(tfile, "dataRunB", variable, "_ss")
+    QCDRunC = getHistogram(tfile, "dataRunC", variable, "_ss")
     QCD.Add(QCDRunC)
     for name in ["W1J", "W2J", "W3J", "TT", "ZLL", "ZTT"]:
         ss = getHistogram(tfile, name, variable, "_ss")
