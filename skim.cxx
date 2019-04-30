@@ -72,6 +72,22 @@ auto FilterGoodEvents(T &df) {
 }
 
 
+namespace Helper {
+template <typename T>
+float DeltaPhi(T v1, T v2, const T c = M_PI)
+{
+    auto r = std::fmod(v2 - v1, 2.0 * c);
+    if (r < -c) {
+        r += 2.0 * c;
+    }
+    else if (r > c) {
+        r -= 2.0 * c;
+    }
+    return r;
+}
+}
+
+
 template <typename T>
 auto FindMuonTauPair(T &df) {
     using namespace ROOT::VecOps;
@@ -91,7 +107,7 @@ auto FindMuonTauPair(T &df) {
                                  if(goodMuons[i1] == 1 && goodTaus[i2] == 1) {
                                      const auto deltar = sqrt(
                                              pow(eta_1[i1] - eta_2[i2], 2) +
-                                             pow(DeltaPhi(phi_1[i1], phi_2[i2]), 2));
+                                             pow(Helper::DeltaPhi(phi_1[i1], phi_2[i2]), 2));
                                      if (deltar > 0.5) {
                                          validPair[i] = 1;
                                      }
