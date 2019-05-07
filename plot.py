@@ -10,13 +10,16 @@ labels = {
         "eta_2": "Tau #eta",
         "phi_1": "Muon #phi",
         "phi_2": "Tau #phi",
-        "met": "Missing transverse energy / GeV",
+        "pt_met": "Missing p_{T} / GeV",
+        "phi_met": "Missing #phi",
         "q_1": "Muon charge",
         "q_2": "Tau charge",
         "iso_1": "Muon isolation",
         "iso_2": "Tau isolation",
         "m_1": "Muon mass / GeV",
         "m_2": "Tau mass / GeV",
+        "mt_1": "Muon transverse mass / GeV",
+        "mt_2": "Tau transverse mass / GeV",
         "dm_2": "Tau decay mode",
         "m_vis": "Visible di-tau mass / GeV",
         "pt_vis": "Visible di-tau p_{T} / GeV",
@@ -134,16 +137,16 @@ def main(variable):
     data.Add(dataRunC)
 
     # Data-driven QCD estimation
-    QCD = getHistogram(tfile, "dataRunB", variable, "_ss")
-    QCDRunC = getHistogram(tfile, "dataRunC", variable, "_ss")
+    QCD = getHistogram(tfile, "dataRunB", variable, "_cr")
+    QCDRunC = getHistogram(tfile, "dataRunC", variable, "_cr")
     QCD.Add(QCDRunC)
     for name in ["W1J", "W2J", "W3J", "TT", "ZLL", "ZTT"]:
-        ss = getHistogram(tfile, name, variable, "_ss")
+        ss = getHistogram(tfile, name, variable, "_cr")
         QCD.Add(ss, -1.0)
     for i in range(1, QCD.GetNbinsX() + 1):
         if QCD.GetBinContent(i) < 0.0:
             QCD.SetBinContent(i, 0.0)
-    QCDScaleFactor = 1.00
+    QCDScaleFactor = 0.80
     QCD.Scale(QCDScaleFactor)
 
     # Draw histograms
@@ -188,10 +191,10 @@ def main(variable):
     # Add legend
     legend = ROOT.TLegend(0.4, 0.73, 0.90, 0.88)
     legend.SetNColumns(2)
+    legend.AddEntry(ZTT, "Z#rightarrow#tau#tau", "f")
+    legend.AddEntry(ZLL, "Z#rightarrowll", "f")
     legend.AddEntry(W, "W+jets", "f")
     legend.AddEntry(TT, "t#bar{t}", "f")
-    legend.AddEntry(ZLL, "Z#rightarrowll", "f")
-    legend.AddEntry(ZTT, "Z#rightarrow#tau#tau", "f")
     legend.AddEntry(QCD, "QCD multijet", "f")
     legend.AddEntry(ggH, "gg#rightarrowH (x{:.0f})".format(scale_ggH), "l")
     legend.AddEntry(qqH, "qq#rightarrowH (x{:.0f})".format(scale_qqH), "l")
