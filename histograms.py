@@ -20,7 +20,7 @@ ranges = {
         "mt_1": (default_nbins, 0, 100),
         "mt_2": (default_nbins, 0, 100),
         "dm_2": (11, 0, 11),
-        "m_vis": (default_nbins, 40, 140),
+        "m_vis": (default_nbins, 40, 120),
         "pt_vis": (default_nbins, 0, 60),
         "jpt_1": (default_nbins, 30, 70),
         "jpt_2": (default_nbins, 30, 70),
