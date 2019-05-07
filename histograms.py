@@ -34,7 +34,7 @@ ranges = {
         "jbtag_2": (default_nbins, 0, 1.0),
         "npv": (25, 5, 30),
         "njets": (5, 0, 5),
-        "mjj": (default_nbins, 0, 300),
+        "mjj": (default_nbins, 0, 400),
         "ptjj": (default_nbins, 0, 100),
         "jdeta": (default_nbins, -9.4, 9.4),
         }
