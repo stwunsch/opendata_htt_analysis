@@ -10,7 +10,7 @@
 #include <cmath>
 
 
-const std::string samplesBasePath = "/eos/home-s/swunsch/opendata_files_4/";
+const std::string samplesBasePath = "/local/scratch/hdd/wunsch/opendata_samples/";
 
 
 const std::vector<std::string> sampleNames = {
@@ -252,7 +252,7 @@ auto CheckGeneratorTaus(T &df, const std::string& sample) {
         return df.Define("gen_match", "false");
     } else {
         return df.Define("gen_match",
-                         "abs(GenPart_pdgId[Tau_genPartIdx[idx_1]]) == 15 && \
+                         "abs(GenPart_pdgId[Muon_genPartIdx[idx_1]]) == 15 && \
                           abs(GenPart_pdgId[Tau_genPartIdx[idx_2]]) == 15");
     }
 }
