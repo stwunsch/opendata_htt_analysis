@@ -11,7 +11,7 @@ labels = {
         "phi_1": "Muon #phi",
         "phi_2": "Tau #phi",
         "pt_met": "Missing p_{T} / GeV",
-        "phi_met": "Missing #phi",
+        "phi_met": "Missing p_{T} (#phi)",
         "q_1": "Muon charge",
         "q_2": "Tau charge",
         "iso_1": "Muon isolation",
