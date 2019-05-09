@@ -10,7 +10,7 @@
 #include <cmath>
 
 
-const std::string samplesBasePath = "/local/scratch/hdd/wunsch/opendata_samples/";
+const std::string samplesBasePath = "/path/to/opendata/samples/";
 
 
 const std::vector<std::string> sampleNames = {
