@@ -1,7 +1,7 @@
 #include "ROOT/RDataFrame.hxx"
 #include "ROOT/RVec.hxx"
 
-#include "TLorentzVector.h"
+#include "Math/Vector4D.h"
 #include "TStopwatch.h"
 
 #include <string>
@@ -10,7 +10,7 @@
 #include <cmath>
 
 
-const std::string samplesBasePath = "/path/to/opendata/samples/";
+const std::string samplesBasePath = "/local/scratch/hdd/wunsch/opendata_samples_7/";
 
 
 const std::vector<std::string> sampleNames = {
@@ -154,9 +154,7 @@ template <typename T>
 auto DeclareVariables(T &df) {
     auto add_p4 = [](float pt, float eta, float phi, float mass)
     {
-        TLorentzVector p;
-        p.SetPtEtaPhiM(pt, eta, phi, mass);
-        return p;
+        return ROOT::Math::PtEtaPhiMVector(pt, eta, phi, mass);
     };
 
     using namespace ROOT::VecOps;
@@ -172,13 +170,13 @@ auto DeclareVariables(T &df) {
         return -999.f;
     };
 
-    auto compute_mjj = [](TLorentzVector& p4, RVec<int>& g)
+    auto compute_mjj = [](ROOT::Math::PtEtaPhiMVector& p4, RVec<int>& g)
     {
         if (Sum(g) >= 2) return float(p4.M());
         return -999.f;
     };
 
-    auto compute_ptjj = [](TLorentzVector& p4, RVec<int>& g)
+    auto compute_ptjj = [](ROOT::Math::PtEtaPhiMVector& p4, RVec<int>& g)
     {
         if (Sum(g) >= 2) return float(p4.Pt());
         return -999.f;
