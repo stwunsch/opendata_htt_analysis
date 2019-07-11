@@ -10,9 +10,15 @@
 #include <cmath>
 
 
+/*
+ * Base path to local filesystem or to EOS containing the datasets
+ */
 const std::string samplesBasePath = "/local/scratch/hdd/wunsch/opendata_samples_7/";
 
 
+/*
+ * Names of the datasets to be found in the base path and processed for the analysis
+ */
 const std::vector<std::string> sampleNames = {
     "GluGluToHToTauTau",
     "VBF_HToTauTau",
@@ -26,6 +32,14 @@ const std::vector<std::string> sampleNames = {
 };
 
 
+/*
+ * Compute event weights to be used for the respective datasets
+ *
+ * The event weight reweights the full dataset so that the sum of the weights
+ * is equal to the expected number of events in data. The expecation is given by
+ * multiplying the integrated luminosity of the data with the cross-section of
+ * the process in the datasets divided by the number of simulated events.
+ */
 //const float integratedLuminosity = 4.412 * 1000.0; // Run2012B only
 //const float integratedLuminosity = 7.055 * 1000.0; // Run2012C only
 const float integratedLuminosity = 11.467 * 1000.0; // Run2012B+C
@@ -42,6 +56,9 @@ std::map<std::string, float> eventWeights = {
 };
 
 
+/*
+ * Perform a selection on the minimal requirements of an event
+ */
 template <typename T>
 auto MinimalSelection(T &df) {
     return df.Filter("HLT_IsoMu17_eta2p1_LooseIsoPFTau20 == true", "Passes trigger")
@@ -50,12 +67,22 @@ auto MinimalSelection(T &df) {
 }
 
 
+/*
+ * Find the interesting muons in the muon collection
+ */
 template <typename T>
 auto FindGoodMuons(T &df) {
     return df.Define("goodMuons", "abs(Muon_eta) < 2.1 && Muon_pt > 17 && Muon_tightId == true");
 }
 
 
+/*
+ * Find the interesting taus in the tau collection
+ *
+ * The tau candidates in this collection represent hadronic decays of taus, which
+ * means that the tau decays to combinations of pions and neutrinos in the final
+ * state.
+ */
 template <typename T>
 auto FindGoodTaus(T &df) {
     return df.Define("goodTaus", "Tau_charge != 0 && abs(Tau_eta) < 2.3 && Tau_pt > 20 &&\
@@ -64,6 +91,10 @@ auto FindGoodTaus(T &df) {
 }
 
 
+/*
+ * Reduce the dataset to the interesting events containing at least one interesting
+ * muon and tau candidate.
+ */
 template <typename T>
 auto FilterGoodEvents(T &df) {
     return df.Filter("Sum(goodTaus) > 0", "Event has good taus")
@@ -71,6 +102,10 @@ auto FilterGoodEvents(T &df) {
 }
 
 
+/*
+ * Helper function to compute the difference in the azimuth coordinate taking
+ * the boundary conditions at 2 * pi into account.
+ */
 namespace Helper {
 template <typename T>
 float DeltaPhi(T v1, T v2, const T c = M_PI)
@@ -87,6 +122,13 @@ float DeltaPhi(T v1, T v2, const T c = M_PI)
 }
 
 
+/*
+ * Select a muon-tau pair from the collections of muons and taus passing the
+ * initial selection. The selected pair represents the candidate for this event
+ * for a Higgs boson decay to two tau leptons of which one decays to a hadronic
+ * final state (most likely a combination of pions) and one decays to a muon and
+ * a neutrino.
+ */
 template <typename T>
 auto FindMuonTauPair(T &df) {
     using namespace ROOT::VecOps;
@@ -150,6 +192,9 @@ auto FindMuonTauPair(T &df) {
 }
 
 
+/*
+ * Declare all variables which we want to study in the analysis
+ */
 template <typename T>
 auto DeclareVariables(T &df) {
     auto add_p4 = [](float pt, float eta, float phi, float mass)
@@ -238,6 +283,9 @@ auto DeclareVariables(T &df) {
 }
 
 
+/*
+ * Add the event weight to the dataset as the column "weight"
+ */
 template <typename T>
 auto AddEventWeight(T &df, const std::string& sample) {
     const auto weight = eventWeights[sample];
@@ -245,6 +293,13 @@ auto AddEventWeight(T &df, const std::string& sample) {
 }
 
 
+/*
+ * Check that the generator particles matched to the reconstructed taus are
+ * actually taus and add this information the the dataset.
+ *
+ * This information is used to estimate the fraction of events that are falsely
+ * reconstructed as taus, e.g., electrons or jets that could fake such a particle.
+ */
 template <typename T>
 auto CheckGeneratorTaus(T &df, const std::string& sample) {
     if (sample.find("Run2012") == 0) {
@@ -257,6 +312,9 @@ auto CheckGeneratorTaus(T &df, const std::string& sample) {
 }
 
 
+/*
+ * Declare all variables which shall end up in the final reduced dataset
+ */
 const std::vector<std::string> finalVariables = {
     "njets", "npv",
     "pt_1", "eta_1", "phi_1", "m_1", "iso_1", "q_1", "mt_1",
@@ -268,6 +326,15 @@ const std::vector<std::string> finalVariables = {
 };
 
 
+/*
+ * Main function of the skimming step of the analysis
+ *
+ * The skimming step reduces the inital generic samples to a dataset optimized
+ * for this specific analysis. Most important, the skimming removes all events
+ * from the initial dataset, which are not of interest for our study and builds
+ * from the reconstructed muons and taus a valid pair, which may originate from
+ * the decay of a Higgs boson.
+ */
 int main() {
     ROOT::EnableImplicitMT();
     const auto poolSize = ROOT::GetImplicitMTPoolSize();
