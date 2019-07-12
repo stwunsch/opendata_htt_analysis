@@ -1,8 +1,13 @@
+# Implementation of the plotting step of the analysis
+#
+# The plotting combines the histograms to plots which allow us to study the
+# inital dataset based on observables motivated through physics.
+
+
 import ROOT
-ROOT.PyConfig.IgnoreCommandLineOptions = True
-import argparse
 
 
+# Declare a human-readable label for each variable
 labels = {
         "pt_1": "Muon p_{T} / GeV",
         "pt_2": "Tau p_{T} / GeV",
@@ -41,6 +46,7 @@ labels = {
         }
 
 
+# Specify the color for each process
 colors = {
         "ggH": ROOT.TColor.GetColor("#BF2229"),
         "qqH": ROOT.TColor.GetColor("#00A88F"),
@@ -52,6 +58,8 @@ colors = {
         }
 
 
+# Retrieve a histogram from the input file based on the process and the variable
+# name
 def getHistogram(tfile, name, variable, tag=""):
     name = "{}_{}{}".format(name, variable, tag)
     h = tfile.Get(name)
@@ -60,6 +68,13 @@ def getHistogram(tfile, name, variable, tag=""):
     return h
 
 
+# Main function of the plotting step
+#
+# The major part of the code below is dedicated to define a nice-looking layout.
+# The interesting part is the combination of the histograms to the QCD estimation.
+# There, we take the data histogram from the control region and subtract all known
+# processes defined in simulation and define the remaining part as QCD. Then,
+# this shape is extrapolated into the signal region with a scale factor.
 def main(variable):
     tfile = ROOT.TFile("histograms.root", "READ")
 
@@ -215,12 +230,7 @@ def main(variable):
     c.SaveAs("{}.png".format(variable))
 
 
+# Loop over all variable names and make a plot for each
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Plot variable")
-    parser.add_argument("-x", "--variable", default="", type=str, help="Variable")
-    args = parser.parse_args()
-    if args.variable in ["", "all"]:
-        for variable in labels.keys():
-            main(variable)
-    else:
-        main(args.variable)
+    for variable in labels.keys():
+        main(variable)

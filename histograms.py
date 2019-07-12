@@ -1,6 +1,19 @@
+# Implementation of the histogramming step of the analysis
+#
+# The histogramming step produces histograms for each variable in the dataset
+# and for each physics process resulting into the final state with a muon and a
+# tau. Then, the resulting histograms are passed to the plotting step, which
+# combines the histograms so that we can study the physics of the decay.
+
+
 import ROOT
 
 
+# Declare the range of the histogram for each variable
+#
+# Each entry in the dictionary contains of the variable name as key and a tuple
+# specifying the histogram layout as value. The tuple sets the number of bins,
+# the lower edge and the upper edge of the histogram.
 default_nbins = 30
 ranges = {
         "pt_1": (default_nbins, 17, 70),
@@ -40,16 +53,21 @@ ranges = {
         }
 
 
+# Book a histogram for a specific variable
 def bookHistogram(df, variable, range_):
     return df.Histo1D(ROOT.ROOT.RDF.TH1DModel(variable, variable, range_[0], range_[1], range_[2]),\
                       variable, "weight")
 
 
+# Write a histogram with a given name to the output ROOT file
 def writeHistogram(h, name):
     h.SetName(name)
     h.Write()
 
 
+# Apply a selection based on generator information about the tau
+#
+# See the skimming step for further details about this variable.
 def filterGenMatch(df, label):
     if label is "ZTT":
         return df.Filter("gen_match == true")
@@ -59,6 +77,15 @@ def filterGenMatch(df, label):
         return df
 
 
+# Main function of the histogramming step
+#
+# The function loops over the outputs from the skimming step and produces the
+# required histograms for the final plotting.
+# Note that we perform a set of secondary selections on the skimmed dataset. First,
+# we perform a second reduction with the baseline selection to a signal-enriched
+# part of the dataset. Second, we select besides the signal region a control region
+# which is used to estimate the contribution of QCD events producing the muon-tau
+# pair in the final state.
 def main():
     # Set up multi-threading capability of ROOT
     ROOT.ROOT.EnableImplicitMT()
@@ -89,7 +116,7 @@ def main():
                       .Filter("mt_1<20", "Muon transverse mass cut for W+jets suppression")\
                       .Filter("iso_1<0.1", "Require isolated muon for signal region")
 
-        # Book histograms for signal region
+        # Book histograms for the signal region
         df1 = df.Filter("q_1*q_2<0", "Require opposited charge for signal region")
         df1 = filterGenMatch(df1, label)
         hists = {}
@@ -97,7 +124,7 @@ def main():
             hists[variable] = bookHistogram(df1, variable, ranges[variable])
         report1 = df1.Report()
 
-        # Book histograms for control region
+        # Book histograms for the control region used to estimate the QCD contribution
         df2 = df.Filter("q_1*q_2>0", "Control region for QCD estimation")
         df2 = filterGenMatch(df2, label)
         hists_cr = {}
@@ -105,7 +132,7 @@ def main():
             hists_cr[variable] = bookHistogram(df2, variable, ranges[variable])
         report2 = df2.Report()
 
-        # Write histograms to file
+        # Write histograms to output file
         for variable in variables:
             writeHistogram(hists[variable], "{}_{}".format(label, variable))
         for variable in variables:

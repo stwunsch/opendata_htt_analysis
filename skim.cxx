@@ -1,3 +1,13 @@
+/*
+ * Implementation of the skimming step of the analysis
+ *
+ * The skimming step reduces the inital generic samples to a dataset optimized
+ * for this specific analysis. Most important, the skimming removes all events
+ * from the initial dataset, which are not of interest for our study and builds
+ * from the reconstructed muons and taus a valid pair, which may originate from
+ * the decay of a Higgs boson.
+ */
+
 #include "ROOT/RDataFrame.hxx"
 #include "ROOT/RVec.hxx"
 
@@ -329,11 +339,8 @@ const std::vector<std::string> finalVariables = {
 /*
  * Main function of the skimming step of the analysis
  *
- * The skimming step reduces the inital generic samples to a dataset optimized
- * for this specific analysis. Most important, the skimming removes all events
- * from the initial dataset, which are not of interest for our study and builds
- * from the reconstructed muons and taus a valid pair, which may originate from
- * the decay of a Higgs boson.
+ * The function loops over all required samples, reduces the content to the
+ * interesting events and writes them to new files.
  */
 int main() {
     ROOT::EnableImplicitMT();
